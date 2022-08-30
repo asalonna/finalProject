@@ -1,0 +1,32 @@
+Program:
+	'Question <' content+=Content '>'
+	'Answer <' answerContents+=Content '>'
+;
+
+Content:
+	Text | Field | RandInt | RandFloat | RandOrder
+;
+
+Text:
+	'"' x=/[^"]*/ '"'
+;
+
+Field:
+	'$' x=/[^\$\s]*/ '$'
+;
+
+RandInt:
+	'%int' x=INT ',' y=INT '%'
+;
+
+RandFloat:
+	'%float' x=FLOAT ',' y=FLOAT '%'
+;
+
+RandOrder:
+	'#{' item+=/[^,\}\s]*/[','] '}#'
+;
+
+Comment:
+	/\/\/.*$/
+;

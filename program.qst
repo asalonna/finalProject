@@ -1,0 +1,4 @@
+//Question <"Print each value from the array" #{North, East, South, West}# "on a new line">
+//Question <"Print the value" %int 1,27% "or" %float 1.1,26.9%>
+Question <"Print the string 'Hello, World!'">
+Answer <"Hello, World!">
