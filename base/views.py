@@ -7,6 +7,7 @@ from .models import Questions
 import requests
 
 # Create your views here.
+
 def index(request):
     template = loader.get_template('base/index.html')
     return render(request, 'base/index.html')
