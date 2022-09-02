@@ -1,6 +1,6 @@
 Program:
 	'Question <' content+=Content '>'
-	'Answer <' answerContents+=Content '>'
+	'Answer <' answerContents+=AnswerContent '>'
 ;
 
 Content:
@@ -16,15 +16,43 @@ Field:
 ;
 
 RandInt:
-	'%int' x=INT ',' y=INT '%'
+	'%randInt ' variableName=/[^=\s>]*/ '=' x=INT ',' y=INT '%'
 ;
 
 RandFloat:
-	'%float' x=FLOAT ',' y=FLOAT '%'
+	'%randFloat' variableName=/[^=\s>]*/ '=' x=FLOAT ',' y=FLOAT '%'
 ;
 
 RandOrder:
 	'#{' item+=/[^,\}\s]*/[','] '}#'
+;
+
+AnswerContent:
+	contentType = AnswerContentType ( '*' repeat=INT )?
+;
+
+AnswerContentType:
+	Text | Script | Function | Variable
+;
+
+Variable:
+	name=/[^=\s>]*/
+;
+
+Function:
+	Order | Sequence
+;
+
+Order:
+	'order{' list+=INT[','] '}'
+;
+
+Sequence:
+	'sequence{' 'from' start=INT 'until' end=INT 'step' step=INT '}'
+;
+
+Script:
+	'python{{' script = /[^(}})]*/ '}}'
 ;
 
 Comment:

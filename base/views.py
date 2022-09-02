@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from .forms import CreateQuestionForm
 from .models import Questions
-import requests
+import requests 
 
 # Create your views here.
 
