@@ -1,4 +1,4 @@
 //Question <"Print each value from the array" #{North, East, South, West}# "on a new line">
-//Question <"Print the value" %int 1,27% "or" %float 1.1,26.9%>
-Question <"Print the string 'Hello, World!'">
-Answer <"Hello, World!">
+Question <"Print the value " %randInt x = 1,27%>
+//Question <"Print the string 'Hello, World!'">
+Answer <"Hello, World! "*3 " Python Script: "python{{15*37}} ". Ordered List = [" order{2,1,3} "] Sequence List = [" sequence{from 3 until 52 step 4} "] Variable x = " x>
