@@ -2,7 +2,7 @@ import questionMod
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
-from .forms import CreateQuestionForm
+from .forms import CreateQuestionForm, UserAccessForm
 from .models import Questions
 import requests 
 
@@ -12,8 +12,29 @@ def index(request):
     template = loader.get_template('base/index.html')
     return render(request, 'base/index.html')
 
+def access(request):
+    #template = loader.get_template('base/join.html')
+    #return render(request, 'base/join.html')
+    #return HttpResponse(template.render(request))
+    if request.method == 'POST': 
+        form = UserAccessForm(request.POST)
+        if form.is_valid():
+            #if questionMod.verify(form.cleaned_data['question_body'] + form.cleaned_data['question_answer']): # change to verify access code
+            #    return render(request, 'base/createTask.html', {'form': form, 'access_code' : question.id})
+            #else:
+            #    context = {
+            #    }
+            #    return render(request, 'base/join.html', context)
+            if Questions.objects.filter(id=form.cleaned_data['question_access_code']).exists():
+                request.session['user_id'] = form.cleaned_data['user_id']
+                return HttpResponseRedirect('/task/' + form.cleaned_data['question_access_code'])
+            else:
+                return render(request, 'base/join.html', {'form': form})
+    else:
+        form = UserAccessForm()
+    return render(request, 'base/join.html', {'form': form})
+
 def task(request, pk):
-    # print(pk)
     template = loader.get_template('base/task.html')
     question_title = Questions.objects.get(id=pk).title
     dsl = Questions.objects.get(id=pk).question_and_answer
