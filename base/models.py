@@ -16,5 +16,5 @@ class UserMarks(models.Model):
     attempts = models.IntegerField()
     
     def __str__(self):
-        return ("User: " + self.user_id + " Question: " + self.question + 
-                " Completed: " + self.completed + " Attempts:" + self.attempts)
+        return ("User: " + self.user_id +  " Completed: " + str(self.completed)
+                 + " Attempts: " + str(self.attempts))

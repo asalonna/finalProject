@@ -2,7 +2,8 @@ import questionMod
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
-from .forms import CreateQuestionForm, UserAccessForm
+from django.db.models import Avg
+from .forms import CreateQuestionForm, TrackGradeForm, UserAccessForm
 from .models import Questions, UserMarks
 import requests 
 
@@ -19,12 +20,6 @@ def access(request):
     if request.method == 'POST': 
         form = UserAccessForm(request.POST)
         if form.is_valid():
-            #if questionMod.verify(form.cleaned_data['question_body'] + form.cleaned_data['question_answer']): # change to verify access code
-            #    return render(request, 'base/createTask.html', {'form': form, 'access_code' : question.id})
-            #else:
-            #    context = {
-            #    }
-            #    return render(request, 'base/join.html', context)
             if Questions.objects.filter(id=form.cleaned_data['question_access_code']).exists():
                 request.session['user_id'] = form.cleaned_data['user_id']
                 return HttpResponseRedirect('/task/' + form.cleaned_data['question_access_code'])
@@ -57,7 +52,7 @@ def task(request, pk):
             "language": "java",
             "versionIndex": "4",
             "clientId": "91d1751130192e001a980050a26e4a2",
-            "clientSecret": "e018f4f1a3557224977c2ff6d30d3dcec9402f342c4c9587a6f2f9ebba6cc800"
+            "clientSecret": "e018f4f1a3557224977c2ff6d30d3dcec9402f342c4c9587a6f2f9ebba6cc800",
         }
 
         response = requests.post(api_url, json=send)
@@ -118,3 +113,30 @@ def create_question(request):
     else:
         form = CreateQuestionForm()
     return render(request, 'base/createTask.html', {'form': form})
+
+def track(request):
+    if request.method == 'POST': 
+        form = TrackGradeForm(request.POST)
+        if form.is_valid():
+            question_object = Questions.objects.filter(id=form.cleaned_data['question_access_code'], passcode=form.cleaned_data['question_passcode'])
+            if question_object.exists():
+                user_record = UserMarks.objects.filter(question=form.cleaned_data['question_access_code'])
+                context = {
+                    'user_record' : user_record,
+                    'student_count' : user_record.count(),
+                    'correct_count' : user_record.filter(completed = True).count(),
+                    'average_attempts' : user_record.aggregate(Avg('attempts'))['attempts__avg'],
+                    'form' : form,
+                }
+                return render(request, 'base/tracking.html', context)
+            else:
+                context = {
+                    'form' : form,
+                }
+                return render(request, 'base/tracking.html', context)
+    else:
+        form = TrackGradeForm()
+        context = {
+            'form': form,
+        }
+    return render(request, 'base/tracking.html', context)

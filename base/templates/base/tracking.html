@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://kit.fontawesome.com/f62aa6f8cf.js" crossorigin="anonymous"></script>
+    <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
+    crossorigin="anonymous"
+    />
+    <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"
+    />
+    <link
+    href="https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css"
+    rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="style.css" />
+    <title>Track Grades</title>
+</head>
+<body class="bg-dark text-light">
+    <div class="container bg-dark text-light">
+        <div class="row gx-4">
+            <!-- Login -->
+            <div class="col-md p-5">
+                <h1>Track Grades</h1>
+                <p class="lead mt-3">
+                    Enter question details to see student grades
+                </p>
+                <form action="/track" method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="access_code" class="col-form-label">
+                            Question Access Code:
+                        </label>
+                        <!--<input type="text" class="form-control" id="acLogin">-->
+                        {{ form.question_access_code }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="col-form-label">
+                            Question Password:
+                        </label>
+                        <!--<input type="text" class="form-control" id="useridLogin">-->
+                        {{ form.question_passcode }}
+                    </div>
+                    <input type="submit" value="Submit">
+                    <!--<button type="button" class="btn btn-primary mb-3">Access Questions</button><br>-->
+                    
+                </form>
+                <h3>Student Summary</h3>
+                <p>
+                    Number of Students Attempted: {{ student_count }} <br>
+                    Number of Correct Answers: {{ correct_count }} <br>
+                    Average Number of Attempts: {{ average_attempts }} <br>
+                </p>
+                <h3>Student Data</h3>
+                {% for user_record in user_record %}
+                <p>{{ user_record }}</p>
+                {% endfor %}
+            </div>
+        </div>
+</body>
+</html>
