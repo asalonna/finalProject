@@ -8,4 +8,13 @@ class Questions(models.Model):
 
     def __str__(self):
         return self.title
+
+class UserMarks(models.Model):
+    user_id = models.CharField(max_length=10)
+    question = models.ForeignKey(Questions, on_delete=models.CASCADE)
+    completed = models.BooleanField()
+    attempts = models.IntegerField()
     
+    def __str__(self):
+        return ("User: " + self.user_id + " Question: " + self.question + 
+                " Completed: " + self.completed + " Attempts:" + self.attempts)

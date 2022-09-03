@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from .forms import CreateQuestionForm, UserAccessForm
-from .models import Questions
+from .models import Questions, UserMarks
 import requests 
 
 # Create your views here.
@@ -36,10 +36,20 @@ def access(request):
 
 def task(request, pk):
     template = loader.get_template('base/task.html')
-    question_title = Questions.objects.get(id=pk).title
-    dsl = Questions.objects.get(id=pk).question_and_answer
+    question_object = Questions.objects.get(id=pk)
+    question_title = question_object.title
+    dsl = question_object.question_and_answer
     question = questionMod.getQuestionObjectString(dsl, 69420)
     if request.method == 'POST':
+        if not UserMarks.objects.filter(question=pk, user_id=request.session['user_id']).exists():
+            usermark = UserMarks(
+                user_id = request.session['user_id'],
+                question = question_object,
+                completed = False,
+                attempts = 0,
+            )
+            usermark.save()
+        
         code = request.POST.get('codemirror-textarea')
         api_url = "https://api.jdoodle.com/execute"
         send = {
@@ -53,14 +63,15 @@ def task(request, pk):
         response = requests.post(api_url, json=send)
         answer = question.answerText
         
+        userMark = UserMarks.objects.get(question=pk, user_id=request.session['user_id'])
+        userMark.attempts += 1
         feedback = ""
         if str(response.json()['output']).rstrip() == answer: # might need to allow tailing whitespace?
+            userMark.completed = True
             feedback = "Congratulations, your submission matches the expected answer"   
         else:
             feedback = "Your submission does not match the expected answer, please try again"
-        
-
-
+        userMark.save()
         context = {
             'content':code,
             'question_title':question_title,
@@ -90,10 +101,6 @@ def create_question(request):
     if request.method == 'POST': 
         form = CreateQuestionForm(request.POST)
         if form.is_valid():
-            # print(form.cleaned_data['question_title'])
-            # print(form.cleaned_data['question_body'])
-            # print(form.cleaned_data['question_answer'])
-            # print(form.cleaned_data['question_passcode'])
             if questionMod.verify(form.cleaned_data['question_body'] + form.cleaned_data['question_answer']):
                 question = Questions(
                     title = form.cleaned_data['question_title'], 
@@ -101,7 +108,6 @@ def create_question(request):
                     passcode = form.cleaned_data['question_passcode'],
                 )
                 question.save()
-                # print(question.id)
                 return render(request, 'base/createTask.html', {'form': form, 'access_code' : question.id})
             else:
                 context = {
