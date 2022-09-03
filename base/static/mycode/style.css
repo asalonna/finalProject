@@ -1,0 +1,8 @@
+.input .fa {
+    margin-left: 10px;
+}
+
+.input {
+    display: flex;
+    align-items: center;
+}

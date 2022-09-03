@@ -1,0 +1,60 @@
+Program:
+	'Question <' content+=Content '>'
+	'Answer <' answerContents+=AnswerContent '>'
+;
+
+Content:
+	Text | Field | RandInt | RandFloat | RandOrder
+;
+
+Text:
+	'"' x=/[^"]*/ '"'
+;
+
+Field:
+	'$' x=/[^\$\s]*/ '$'
+;
+
+RandInt:
+	'%randInt ' variableName=/[^=\s>]*/ '=' x=INT ',' y=INT '%'
+;
+
+RandFloat:
+	'%randFloat' variableName=/[^=\s>]*/ '=' x=FLOAT ',' y=FLOAT '%'
+;
+
+RandOrder:
+	'#{' item+=/[^,\}\s]*/[','] '}#'
+;
+
+AnswerContent:
+	contentType = AnswerContentType ( '*' repeat=INT )?
+;
+
+AnswerContentType:
+	Text | Script | Function | Variable
+;
+
+Variable:
+	name=/[^=\s>]*/
+;
+
+Function:
+	Order | Sequence
+;
+
+Order:
+	'order{' list+=INT[','] '}'
+;
+
+Sequence:
+	'sequence{' 'from' start=INT 'until' end=INT 'step' step=INT '}'
+;
+
+Script:
+	'python{{' script = /[^(}})]*/ '}}'
+;
+
+Comment:
+	/\/\/.*$/
+;
