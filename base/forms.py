@@ -9,3 +9,7 @@ class CreateQuestionForm(forms.Form):
 class UserAccessForm(forms.Form):
     user_id = forms.CharField(label='User ID:', max_length=10)
     question_access_code = forms.CharField(label='Question Access Code:', max_length=10)
+
+class TrackGradeForm(forms.Form):
+    question_access_code = forms.CharField(label='Question Access Code:', max_length=10)
+    question_passcode = forms.CharField(label='Question Password:', max_length=10)
