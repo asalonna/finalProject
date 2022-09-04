@@ -95,7 +95,7 @@
 						</textarea><br>
                         <form id="CodeForm" action="/task/{{ pk }}" method="post">
 							{% csrf_token %}
-							<input type="submit" value="Submit Work" class="btn btn-primary me-4 display-flex"></button>
+							<input type="submit" value="Submit Work" class="btn btn-primary me-4 mb-4 display-flex"></button>
 						</form>
                         <form id="NextQuestionForm" action="/next/{{ next_pk }}" method="post">
 							{% csrf_token %}
