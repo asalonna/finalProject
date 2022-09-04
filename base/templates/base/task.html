@@ -4,7 +4,6 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="style.css">
         <script src="https://kit.fontawesome.com/f62aa6f8cf.js" crossorigin="anonymous"></script>
         <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css"
@@ -97,8 +96,10 @@
                         <form id="CodeForm" action="/task/{{ pk }}" method="post">
 							{% csrf_token %}
 							<input type="submit" value="Submit Work" class="btn btn-primary me-4 display-flex"></button>
-							<input type="button" value="Next Question" class="btn btn-secondary me-4"></button>
-							<input type="button" value="Help" class="btn btn-danger me-4"></button>
+						</form>
+                        <form id="NextQuestionForm" action="/next/{{ next_pk }}" method="post">
+							{% csrf_token %}
+							<input type="submit" value="Next Question" class="btn btn-secondary me-4"></button>
 						</form>
                         </div>
                     </div>

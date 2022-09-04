@@ -6,6 +6,7 @@ from django.db.models import Avg
 from .forms import CreateQuestionForm, TrackGradeForm, UserAccessForm
 from .models import Questions, UserMarks
 import requests 
+from random import randint
 
 # Create your views here.
 
@@ -61,9 +62,21 @@ def task(request, pk):
         userMark = UserMarks.objects.get(question=pk, user_id=request.session['user_id'])
         userMark.attempts += 1
         feedback = ""
+        next_question_id = -1
         if str(response.json()['output']).rstrip() == answer: # might need to allow tailing whitespace?
             userMark.completed = True
-            feedback = "Congratulations, your submission matches the expected answer"   
+            feedback = "Congratulations, your submission matches the expected answer"
+            if userMark.attempts <= 5:
+                next_difficulty = question_object.difficulty + 1
+                possible_questions = Questions.objects.filter(
+                    difficulty=next_difficulty, 
+                    class_group=question_object.class_group
+                )
+                if possible_questions.exists():
+                    random_question = randint(0, len(possible_questions)-1)
+                    possible_questions_list = list(possible_questions)
+                    next_question = possible_questions_list[random_question]
+                    next_question_id = next_question.id
         else:
             feedback = "Your submission does not match the expected answer, please try again"
         userMark.save()
@@ -74,6 +87,7 @@ def task(request, pk):
             'question':question,
             'feedback':feedback,
             'pk':pk,
+            'next_pk':next_question_id,
         }
         return HttpResponse(template.render(context, request))
 
@@ -92,6 +106,9 @@ def task(request, pk):
         }
         return HttpResponse(template.render(context, request))
 
+def next_question(request, pk):
+    return HttpResponseRedirect('/task/' + str(pk))
+
 def create_question(request):
     if request.method == 'POST': 
         form = CreateQuestionForm(request.POST)
@@ -101,6 +118,8 @@ def create_question(request):
                     title = form.cleaned_data['question_title'], 
                     question_and_answer = form.cleaned_data['question_body'] + form.cleaned_data['question_answer'],
                     passcode = form.cleaned_data['question_passcode'],
+                    difficulty = form.cleaned_data['question_difficulty'],
+                    class_group = form.cleaned_data['class_group'],
                 )
                 question.save()
                 return render(request, 'base/createTask.html', {'form': form, 'access_code' : question.id})
