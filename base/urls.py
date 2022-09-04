@@ -8,5 +8,6 @@ urlpatterns = [
     path('create', views.create_question, name='create_question'),
     path('access', views.access, name='access_question'),
     path('track', views.track, name='tracking'),
+    path('next/<int:pk>', views.next_question, name='next'),
 ]
 

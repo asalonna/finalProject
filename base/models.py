@@ -5,6 +5,8 @@ class Questions(models.Model):
     title = models.CharField(max_length=100)
     question_and_answer = models.CharField(max_length=1000)
     passcode = models.CharField(max_length=10)
+    class_group = models.CharField(max_length=50)
+    difficulty = models.PositiveIntegerField()
 
     def __str__(self):
         return self.title
