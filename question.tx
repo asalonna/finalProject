@@ -28,7 +28,7 @@ RandOrder:
 ;
 
 AnswerContent:
-	contentType = AnswerContentType ( '*' repeat=INT )?
+	contentType = AnswerContentType ( '*' (repeat=INT | repeat=/[^=\s>]*/ ) )?
 ;
 
 AnswerContentType:
@@ -44,11 +44,15 @@ Function:
 ;
 
 Order:
-	'order{' list+=INT[','] '}'
+	'order{' list+=FunctionItem[','] '}'
 ;
 
 Sequence:
-	'sequence{' 'from' start=INT 'until' end=INT 'step' step=INT '}'
+	'sequence{' 'from' start=FunctionItem 'until' end=FunctionItem 'step' step=FunctionItem '}'
+;
+
+FunctionItem:
+	INT | /[^=\s>,{}]*/
 ;
 
 Script:
