@@ -15,9 +15,6 @@ def index(request):
     return render(request, 'base/index.html')
 
 def access(request):
-    #template = loader.get_template('base/join.html')
-    #return render(request, 'base/join.html')
-    #return HttpResponse(template.render(request))
     if request.method == 'POST': 
         form = UserAccessForm(request.POST)
         if form.is_valid():
@@ -35,7 +32,7 @@ def task(request, pk):
     question_object = Questions.objects.get(id=pk)
     question_title = question_object.title
     dsl = question_object.question_and_answer
-    question = questionMod.getQuestionObjectString(dsl, 69420)
+    question = questionMod.getQuestionObjectString(dsl, 20)
     if request.method == 'POST':
         if not UserMarks.objects.filter(question=pk, user_id=request.session['user_id']).exists():
             usermark = UserMarks(
