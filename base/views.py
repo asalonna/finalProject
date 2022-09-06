@@ -15,7 +15,6 @@ def index(request):
     return render(request, 'base/index.html')
 
 def access(request):
-    #template = loader.get_template('base/join.html')
     if request.method == 'POST': 
         form = UserAccessForm(request.POST)
         if form.is_valid():
