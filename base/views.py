@@ -14,6 +14,7 @@ def index(request):
     template = loader.get_template('base/index.html')
     return render(request, 'base/index.html')
 
+# where students access the questions
 def access(request):
     if request.method == 'POST': 
         form = UserAccessForm(request.POST)
@@ -27,6 +28,7 @@ def access(request):
         form = UserAccessForm()
     return render(request, 'base/join.html', {'form': form})
 
+# fetches and shows questions, compiles code, and marks answer
 def task(request, pk):
     template = loader.get_template('base/task.html')
     question_object = Questions.objects.get(id=pk)
@@ -103,9 +105,11 @@ def task(request, pk):
         }
         return HttpResponse(template.render(context, request))
 
+# redirects to next question
 def next_question(request, pk):
     return HttpResponseRedirect('/task/' + str(pk))
 
+# creates and stores questions
 def create_question(request):
     if request.method == 'POST': 
         form = CreateQuestionForm(request.POST)
@@ -130,6 +134,7 @@ def create_question(request):
         form = CreateQuestionForm()
     return render(request, 'base/createTask.html', {'form': form})
 
+# allows teachers to see data for the questions and the grades
 def track(request):
     if request.method == 'POST': 
         form = TrackGradeForm(request.POST)
