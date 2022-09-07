@@ -62,20 +62,27 @@ def task(request, pk):
         userMark.attempts += 1
         feedback = ""
         next_question_id = -1
-        if str(response.json()['output']).rstrip() == answer: # might need to allow tailing whitespace?
+        if str(response.json()['output']).rstrip() == answer:
             userMark.completed = True
             feedback = "Congratulations, your submission matches the expected answer"
-            if userMark.attempts <= 5:
+            if userMark.attempts <= 5: #throws error currently when user has attempted more than 5 times
                 next_difficulty = question_object.difficulty + 1
                 possible_questions = Questions.objects.filter(
                     difficulty=next_difficulty, 
                     class_group=question_object.class_group
                 )
+                print(possible_questions)
                 if possible_questions.exists():
                     random_question = randint(0, len(possible_questions)-1)
+                    print(random_question)
                     possible_questions_list = list(possible_questions)
+                    print(possible_questions_list)
                     next_question = possible_questions_list[random_question]
+                    print(next_question)
                     next_question_id = next_question.id
+                    print(next_question_id)
+                else:
+                    next_question_id = "-1"
         else:
             feedback = "Your submission does not match the expected answer, please try again"
         userMark.save()
@@ -107,7 +114,12 @@ def task(request, pk):
 
 # redirects to next question
 def next_question(request, pk):
+    if pk == "-1":
+        return HttpResponseRedirect('/end_screen')
     return HttpResponseRedirect('/task/' + str(pk))
+
+def end_of_questions(request):
+    return render(request, 'base/end_screen.html')
 
 # creates and stores questions
 def create_question(request):
