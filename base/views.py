@@ -122,6 +122,7 @@ def next_question(request, pk):
         return HttpResponseRedirect('/end_screen')
     return HttpResponseRedirect('/task/' + str(pk))
 
+
 def end_of_questions(request):
     return render(request, 'base/end_screen.html')
 

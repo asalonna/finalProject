@@ -89,10 +89,12 @@
 							{% csrf_token %}
 							<input type="submit" value="Submit Work" class="btn btn-primary me-4 mb-4 display-flex"></button>
 						</form>
+                        {% if feedback == "Congratulations, your submission matches the expected answer" %} 
                         <form id="NextQuestionForm" action="/next/{{ next_pk }}" method="post">
 							{% csrf_token %}
 							<input type="submit" value="Next Question" class="btn btn-secondary me-4"></button>
 						</form>
+                        {% endif %}
                         </div>
                     </div>
                     <div class="col-md-6 offset-md-6 mt-5">
