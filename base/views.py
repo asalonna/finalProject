@@ -1,7 +1,7 @@
 from multiprocessing import pool
 import questionMod
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.template import loader
 from django.db.models import Avg
 from .forms import CreateQuestionForm, TrackGradeForm, UserAccessForm
@@ -31,6 +31,9 @@ def access(request):
 
 # fetches and shows questions, compiles code, and marks answer
 def task(request, pk):
+    if id_check(request) == False:
+        raise Http404("You do not have permission to access this page")
+    
     template = loader.get_template('base/task.html')
     question_object = Questions.objects.get(id=pk)
     question_title = question_object.title
@@ -118,13 +121,19 @@ def task(request, pk):
 
 # redirects to next question
 def next_question(request, pk):
+    if id_check(request) == False:
+        raise Http404("You do not have permission to access this page")
     if pk == "-1":
         return HttpResponseRedirect('/end_screen')
     return HttpResponseRedirect('/task/' + str(pk))
 
 
 def end_of_questions(request):
+    if id_check(request) == False:
+        raise Http404("You do not have permission to access this page")
+    request.session.pop('user_id')
     return render(request, 'base/end_screen.html')
+    
 
 # creates and stores questions
 def create_question(request):
@@ -178,3 +187,20 @@ def track(request):
             'form': form,
         }
     return render(request, 'base/tracking.html', context)
+
+# def get_referer(request):
+#     referer = request.META.get('HTTP_REFERER')
+#     if not referer:
+#         return None
+#     return referer
+
+def id_check(request):
+    try:
+        # if (request.session['user_id']).exists():
+        #     return True
+        print(request.session['user_id'])
+    except KeyError:
+        return False
+    else:
+        return True
+  

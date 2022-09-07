@@ -1,6 +1,6 @@
 Program:
 	'Question <' content+=Content '>'
-	('Restrict <' restrictions+=RestrictContent '>')?
+	('Restrict <' restrictions*=RestrictContent '>')?
 	'Answer <' answerContents+=AnswerContent '>'
 ;
 
