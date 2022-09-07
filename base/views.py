@@ -65,24 +65,21 @@ def task(request, pk):
         if str(response.json()['output']).rstrip() == answer:
             userMark.completed = True
             feedback = "Congratulations, your submission matches the expected answer"
-            if userMark.attempts <= 5: #throws error currently when user has attempted more than 5 times
+            if userMark.attempts <= 5: #throws error currently when user has already attempted more than 5 times
                 next_difficulty = question_object.difficulty + 1
-                possible_questions = Questions.objects.filter(
-                    difficulty=next_difficulty, 
-                    class_group=question_object.class_group
-                )
-                print(possible_questions)
-                if possible_questions.exists():
-                    random_question = randint(0, len(possible_questions)-1)
-                    print(random_question)
-                    possible_questions_list = list(possible_questions)
-                    print(possible_questions_list)
-                    next_question = possible_questions_list[random_question]
-                    print(next_question)
-                    next_question_id = next_question.id
-                    print(next_question_id)
-                else:
-                    next_question_id = "-1"
+            else:
+                next_difficulty = question_object.difficulty
+            possible_questions = Questions.objects.filter(
+                difficulty=next_difficulty, 
+                class_group=question_object.class_group
+            )
+            if possible_questions.exists():
+                random_question = randint(0, len(possible_questions)-1)
+                possible_questions_list = list(possible_questions)
+                next_question = possible_questions_list[random_question]
+                next_question_id = next_question.id
+            else:
+                next_question_id = "-1"
         else:
             feedback = "Your submission does not match the expected answer, please try again"
         userMark.save()
