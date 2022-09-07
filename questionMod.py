@@ -6,15 +6,18 @@ class Question(object):
 
     def __init__(self):
         self.questionText = ""
+        self.restrictions = ""
         self.answerText = ""
         self.variables = {}
+        self.model = None
 
     def __str__(self):
         return self.questionText
 
     def interpret(self, model, question_seed):
+        self.model = model
+        random.seed(question_seed)
         for c in model.content:
-            random.seed(question_seed)
 
             if c.__class__.__name__ == "Text":
                 self.questionText = self.questionText + c.x
@@ -36,8 +39,7 @@ class Question(object):
                 randFloat = random.uniform(c.x,c.y)
                 self.variables[c.variableName] = randFloat
                 self.questionText = self.questionText + str(randFloat)
-            
-        
+
         for a in model.answerContents:
             if a.repeat is None:
                 repeat = 1
@@ -71,13 +73,44 @@ class Question(object):
                             self.answerText = self.answerText + ","
                 
                 elif a.contentType.__class__.__name__ == "Script":
+                    for i in self.variables:
+                        if type(self.variables[i]) == int:
+                            exec("%s = %d" % (i,self.variables[i]))
+                        elif type(self.variables[i]) == float:
+                            exec("%s = %f" % (i,self.variables[i]))
                     self.answerText = self.answerText + str(eval(a.contentType.script))
-                
+
                 elif a.contentType.__class__.__name__ == "Variable":
                     self.answerText = self.answerText + str(self.variables[a.contentType.name])
 
     def isCorrect(self, answer):
-        return answer == self.answerText
+        return (''.join(answer.split()).lower() == ''.join(self.answerText.split()).lower())
+
+    def checkCode(self, code):
+        last_if = 0
+        last_for = 0
+        last_while = 0
+        for r in self.model.restrictions:
+            if r.x == "if":
+                position = code.find("if", last_if)
+                if position == -1:
+                    return False
+                else:
+                    last_if = position + 1
+                
+            elif r.x == "for":
+                position = code.find("for", last_for)
+                if position == -1:
+                    return False
+                else:
+                    last_for = position + 1
+            elif r.x == "while":
+                position = code.find("while", last_while)
+                if position == -1:
+                    return False
+                else:
+                    last_while = position + 1
+        return True
     
 def verify(strDSL):
     try:
@@ -101,3 +134,4 @@ def getQuestionObjectString(strDSL, question_seed):
     question = Question()
     question.interpret(question_model, question_seed)
     return question
+

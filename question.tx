@@ -1,6 +1,23 @@
 Program:
 	'Question <' content+=Content '>'
+	('Restrict <' restrictions+=RestrictContent '>')?
 	'Answer <' answerContents+=AnswerContent '>'
+;
+
+RestrictContent:
+	(x=If | x=For | x=While) ("(" nest=RestrictContent ")")?
+;
+
+If:
+	"if"
+;
+
+For:
+	"for"
+;
+
+While:
+	"while"
 ;
 
 Content:
