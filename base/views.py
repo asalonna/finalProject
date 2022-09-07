@@ -1,3 +1,4 @@
+from multiprocessing import pool
 import questionMod
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
@@ -67,12 +68,18 @@ def task(request, pk):
             feedback = "Congratulations, your submission matches the expected answer"
             if userMark.attempts <= 5: #throws error currently when user has already attempted more than 5 times
                 next_difficulty = question_object.difficulty + 1
+            elif userMark.attempts >= 10:
+                if question_object.difficulty > 1:
+                    next_difficulty = question_object.difficulty - 1
+                else:
+                    next_difficulty = 1
             else:
                 next_difficulty = question_object.difficulty
             possible_questions = Questions.objects.filter(
                 difficulty=next_difficulty, 
                 class_group=question_object.class_group
             )
+                
             if possible_questions.exists():
                 random_question = randint(0, len(possible_questions)-1)
                 possible_questions_list = list(possible_questions)
