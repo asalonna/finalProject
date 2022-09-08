@@ -18,12 +18,12 @@ class ClassUsers(models.Model):
     class_id = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
     user_id = models.CharField(max_length=10)
     highest_difficulty = models.PositiveIntegerField()
-    last_question = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
+    last_question = models.ForeignKey(Questions, on_delete=models.CASCADE)
     class_completed = models.BooleanField()
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['class_id', 'user_id'])
+            models.UniqueConstraint(fields=['class_id', 'user_id'], name='constrain_classusers')
         ]
 
 class UserMarks(models.Model):
