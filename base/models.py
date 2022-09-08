@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-class ClassRoom(models.Model):
+class ClassRooms(models.Model):
     class_id = models.CharField(max_length=6, primary_key=True)
     name = models.CharField(max_length=100)
     passcode = models.CharField(max_length=10)
@@ -9,13 +9,13 @@ class ClassRoom(models.Model):
 class Questions(models.Model):
     title = models.CharField(max_length=100)
     question_and_answer = models.CharField(max_length=1000)
-    class_id = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
+    class_id = models.ForeignKey(ClassRooms, on_delete=models.CASCADE)
     difficulty = models.PositiveIntegerField()
     def __str__(self):
         return self.title
 
 class ClassUsers(models.Model):
-    class_id = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
+    class_id = models.ForeignKey(ClassRooms, on_delete=models.CASCADE)
     user_id = models.CharField(max_length=10)
     highest_difficulty = models.PositiveIntegerField()
     last_question = models.ForeignKey(Questions, on_delete=models.CASCADE)
