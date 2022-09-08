@@ -30,7 +30,7 @@
                 <p class="lead">
                     Fill out the form below to create a question!
                 </p>
-                <form action="/create_task" method="post">
+                <form action="/create_question" method="post">
                     {% csrf_token %}
                     <div class="mb-3">
                         <label for="questionName" class="mb-1">
@@ -49,12 +49,6 @@
                             Enter the expected answer to your question:
                         </label>
                         {{ form.question_answer }}
-                    </div>
-                    <div class="mb-3">
-                        <label for="questionPasscode" class="mb-1">
-                            Enter a passcode for your question:
-                        </label>
-                        {{ form.question_passcode }}
                     </div>
                     <div class="mb-3">
                         <label for="questionDifficulty" class="mb-1">

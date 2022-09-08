@@ -20,7 +20,6 @@ class ClassUsers(models.Model):
     highest_difficulty = models.PositiveIntegerField()
     last_question = models.ForeignKey(Questions, on_delete=models.CASCADE)
     class_completed = models.BooleanField()
-
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['class_id', 'user_id'], name='constrain_classusers')
@@ -31,7 +30,6 @@ class UserMarks(models.Model):
     question = models.ForeignKey(Questions, on_delete=models.CASCADE)
     completed = models.BooleanField()
     attempts = models.IntegerField()
-    
     def __str__(self):
         return ("User: " + self.user_id +  " Completed: " + str(self.completed)
                  + " Attempts: " + str(self.attempts))
