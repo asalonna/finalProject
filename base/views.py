@@ -180,9 +180,8 @@ def create_question(request):
                 question = Questions(
                     title = form.cleaned_data['question_title'], 
                     question_and_answer = form.cleaned_data['question_body'] + form.cleaned_data['question_answer'],
-                    passcode = form.cleaned_data['question_passcode'],
                     difficulty = form.cleaned_data['question_difficulty'],
-                    class_group = form.cleaned_data['class_group'],
+                    class_id = ClassRooms.objects.get(class_id=form.cleaned_data['class_group']),
                 )
                 question.save()
                 return render(request, 'base/createTask.html', {'form': form, 'access_code' : question.id})
