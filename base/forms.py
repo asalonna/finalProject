@@ -1,5 +1,9 @@
 from django import forms
 
+class CreateClassroomForm(forms.Form):
+    name = forms.CharField(label='Enter a name for the classroom:', max_length=100)
+    passcode = forms.CharField(label='Enter a passcode for your classroom:')
+
 class CreateQuestionForm(forms.Form):
     question_title = forms.CharField(label='Enter a name for the question:', max_length=100)
     question_body = forms.CharField(label='Enter your question:', max_length=500)
