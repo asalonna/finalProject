@@ -4,10 +4,19 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.template import loader
 from django.db.models import Avg
-from .forms import CreateQuestionForm, TrackGradeForm, UserAccessForm
-from .models import Questions, UserMarks
-import requests 
-from random import randint
+from .forms import CreateQuestionForm, TrackGradeForm, UserAccessForm, CreateClassroomForm
+from .models import Questions, UserMarks, ClassRooms
+import requests, string
+from random import randint, choices
+
+# required functions
+def id_check(request):
+    try:
+        print(request.session['user_id'])
+    except KeyError:
+        return False
+    else:
+        return True
 
 # Create your views here.
 
@@ -140,7 +149,27 @@ def end_of_questions(request):
         raise Http404("You do not have permission to access this page")
     request.session.pop('user_id')
     return render(request, 'base/end_screen.html')
-    
+
+# creates and stores classrooms
+def create_classroom(request):
+    if request.method == 'POST': 
+        form = CreateClassroomForm(request.POST)
+        if form.is_valid():
+            # generate class_id
+            class_id = ''.join(choices(string.ascii_uppercase + string.digits, k=6))
+            while ClassRooms.objects.filter(class_id=class_id).exists():
+                class_id = ''.join(choices(string.ascii_uppercase + string.digits, k=6))
+            # add classroom to ClassRooms
+            classroom = ClassRooms(
+                class_id = class_id,
+                name = form.cleaned_data['name'],
+                passcode = form.cleaned_data['passcode'],
+            )
+            classroom.save()
+            return render(request, 'base/createClassroom.html', {'form':form, 'class_id':classroom.class_id})
+    else:
+        form = CreateClassroomForm()
+    return render(request, 'base/createClassroom.html', {'form': form})
 
 # creates and stores questions
 def create_question(request):
@@ -195,11 +224,5 @@ def track(request):
         }
     return render(request, 'base/tracking.html', context)
 
-def id_check(request):
-    try:
-        print(request.session['user_id'])
-    except KeyError:
-        return False
-    else:
-        return True
+
   
