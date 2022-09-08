@@ -39,7 +39,9 @@ def task(request, pk):
     question_title = question_object.title
     dsl = question_object.question_and_answer
     question = questionMod.getQuestionObjectString(dsl, 20)
+
     if request.method == 'POST':
+
         if not UserMarks.objects.filter(question=pk, user_id=request.session['user_id']).exists():
             usermark = UserMarks(
                 user_id = request.session['user_id'],
@@ -66,9 +68,11 @@ def task(request, pk):
         userMark.attempts += 1
         feedback = ""
         next_question_id = -1
+
         if str(response.json()['output']).rstrip() == answer:
             userMark.completed = True
             feedback = "Congratulations, your submission matches the expected answer"
+            
             if userMark.attempts <= 5: #throws error currently when user has already attempted more than 5 times
                 next_difficulty = question_object.difficulty + 1
             elif userMark.attempts >= 10:
@@ -78,6 +82,7 @@ def task(request, pk):
                     next_difficulty = 1
             else:
                 next_difficulty = question_object.difficulty
+            
             possible_questions = Questions.objects.filter(
                 difficulty=next_difficulty, 
                 class_group=question_object.class_group
@@ -90,8 +95,10 @@ def task(request, pk):
                 next_question_id = next_question.id
             else:
                 next_question_id = "-1"
+            
         else:
             feedback = "Your submission does not match the expected answer, please try again"
+        
         userMark.save()
         context = {
             'content':code,
@@ -188,16 +195,8 @@ def track(request):
         }
     return render(request, 'base/tracking.html', context)
 
-# def get_referer(request):
-#     referer = request.META.get('HTTP_REFERER')
-#     if not referer:
-#         return None
-#     return referer
-
 def id_check(request):
     try:
-        # if (request.session['user_id']).exists():
-        #     return True
         print(request.session['user_id'])
     except KeyError:
         return False
