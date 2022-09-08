@@ -29,9 +29,26 @@ def access(request):
     if request.method == 'POST': 
         form = UserAccessForm(request.POST)
         if form.is_valid():
-            if Questions.objects.filter(id=form.cleaned_data['question_access_code']).exists():
+            possible_questions = Questions.objects.filter(class_id=form.cleaned_data['classroom_access_code'], difficulty=1)
+            if possible_questions.exists():
                 request.session['user_id'] = form.cleaned_data['user_id']
-                return HttpResponseRedirect('/task/' + form.cleaned_data['question_access_code'])
+                random_question = randint(0, len(possible_questions)-1)
+                possible_questions_list = list(possible_questions)
+                next_question = possible_questions_list[random_question]
+                next_question_id = next_question.id
+                return HttpResponseRedirect('/task/' + str(next_question_id))
+                # possible_questions = Questions.objects.filter(
+                # difficulty=next_difficulty, 
+                # class_group=question_object.class_group
+                # )
+                    
+                # if possible_questions.exists():
+                #     random_question = randint(0, len(possible_questions)-1)
+                #     possible_questions_list = list(possible_questions)
+                #     next_question = possible_questions_list[random_question]
+                #     next_question_id = next_question.id
+                # else:
+                #     next_question_id = "-1"
             else:
                 return render(request, 'base/join.html', {'form': form})
     else:
@@ -94,7 +111,7 @@ def task(request, pk):
             
             possible_questions = Questions.objects.filter(
                 difficulty=next_difficulty, 
-                class_group=question_object.class_group
+                class_id=question_object.class_id
             )
                 
             if possible_questions.exists():
