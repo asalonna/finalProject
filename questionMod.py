@@ -28,7 +28,7 @@ class Question(object):
             elif c.__class__.__name__ == "RandOrder":
                 arr = c.item
                 random.shuffle(arr)
-                self.questionText =self.questionText + str(arr)
+                self.questionText = self.questionText + str(arr)
 
             elif c.__class__.__name__ == "RandInt":
                 randInt = random.randint(c.x,c.y)

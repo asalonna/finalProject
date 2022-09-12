@@ -12,7 +12,7 @@ from random import randint, choices
 # required functions
 def id_check(request):
     try:
-        print(request.session['user_id'])
+        request.session['user_id']
     except KeyError:
         return False
     else:
@@ -79,17 +79,20 @@ def task(request, pk):
     dsl = question_object.question_and_answer
     question = questionMod.getQuestionObjectString(dsl, 20)
 
+    userMark = None
+    if not UserMarks.objects.filter(question=pk, user_id=request.session['user_id']).exists():
+        userMark = UserMarks(
+            user_id = request.session['user_id'],
+            question = question_object,
+            completed = False,
+            attempts = 0,
+        )
+        userMark.save()
+    else:
+        userMark = UserMarks.objects.get(question=pk, user_id=request.session['user_id'])
+
     if request.method == 'POST':
 
-        if not UserMarks.objects.filter(question=pk, user_id=request.session['user_id']).exists():
-            usermark = UserMarks(
-                user_id = request.session['user_id'],
-                question = question_object,
-                completed = False,
-                attempts = 0,
-            )
-            usermark.save()
-        
         code = request.POST.get('codemirror-textarea')
         api_url = "https://api.jdoodle.com/execute"
         send = {
@@ -103,7 +106,6 @@ def task(request, pk):
         response = requests.post(api_url, json=send)
         answer = question.answerText
         
-        userMark = UserMarks.objects.get(question=pk, user_id=request.session['user_id'])
         userMark.attempts += 1
         class_user = ClassUsers.objects.get(user_id=request.session['user_id'], class_id=question_object.class_id)
         feedback = ""
@@ -166,6 +168,8 @@ def task(request, pk):
     }
 }
 """
+        userMark.attempts = 0
+        userMark.save()
         context = {
             'content':default,
             'question_title':question_title,
