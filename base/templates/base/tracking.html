@@ -29,23 +29,23 @@
             <div class="col-md p-5">
                 <h1>Track Grades</h1>
                 <p class="lead mt-3">
-                    Enter question details to see student grades
+                    Enter classroom access code to see student grades
                 </p>
                 <form action="/track" method="post">
                     {% csrf_token %}
                     <div class="mb-3">
                         <label for="access_code" class="col-form-label">
-                            Question Access Code:
+                            Classroom Access Code:
                         </label>
                         <!--<input type="text" class="form-control" id="acLogin">-->
-                        {{ form.question_access_code }}
+                        {{ form.classroom_access_code }}
                     </div>
                     <div class="mb-3">
                         <label for="password" class="col-form-label">
-                            Question Password:
+                            Classroom Password:
                         </label>
                         <!--<input type="text" class="form-control" id="useridLogin">-->
-                        {{ form.question_passcode }}
+                        {{ form.classroom_passcode }}
                     </div>
                     <input type="submit" value="Submit">
                     <!--<button type="button" class="btn btn-primary mb-3">Access Questions</button><br>-->
@@ -54,13 +54,20 @@
                 <h3>Student Summary</h3>
                 <p>
                     Number of Students Attempted: {{ student_count }} <br>
-                    Number of Correct Answers: {{ correct_count }} <br>
-                    Average Number of Attempts: {{ average_attempts }} <br>
+                    Number of Students Who Completed the Class: {{ completed_count }} <br>
+                    Average Highest Difficulty: {{ highest_difficulty }} <br>
+                    <!-- Number of Correct Answers: {{ correct_count }} <br>
+                    Average Number of Attempts: {{ average_attempts }} <br> -->
                 </p>
-                <h3>Student Data</h3>
+
+                <h3>Classroom Data</h3>
+                {% for class_users_record in class_users_record %}
+                <p>{{ class_users_record }}</p>
+                {% endfor %}
+                <!-- <h3>Student Data</h3>
                 {% for user_record in user_record %}
                 <p>{{ user_record }}</p>
-                {% endfor %}
+                {% endfor %} -->
             </div>
         </div>
 </body>

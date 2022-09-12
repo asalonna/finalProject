@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.template import loader
 from django.db.models import Avg
 from .forms import CreateQuestionForm, TrackGradeForm, UserAccessForm, CreateClassroomForm
-from .models import Questions, UserMarks, ClassRooms
+from .models import ClassUsers, Questions, UserMarks, ClassRooms
 import requests, string
 from random import randint, choices
 
@@ -30,12 +30,25 @@ def access(request):
         form = UserAccessForm(request.POST)
         if form.is_valid():
             possible_questions = Questions.objects.filter(class_id=form.cleaned_data['classroom_access_code'], difficulty=1)
+            
             if possible_questions.exists():
                 request.session['user_id'] = form.cleaned_data['user_id']
                 random_question = randint(0, len(possible_questions)-1)
                 possible_questions_list = list(possible_questions)
                 next_question = possible_questions_list[random_question]
                 next_question_id = next_question.id
+
+                # adds user to class if not already in class
+                if not ClassUsers.objects.filter(class_id=form.cleaned_data['classroom_access_code'], user_id=request.session['user_id']).exists():
+                    class_user = ClassUsers(
+                        class_id = ClassRooms.objects.get(class_id=form.cleaned_data['classroom_access_code']),
+                        user_id = form.cleaned_data['user_id'],
+                        highest_difficulty = 0,
+                        last_question = next_question,
+                        class_completed = False,
+                    )
+                    class_user.save()
+
                 return HttpResponseRedirect('/task/' + str(next_question_id))
                 # possible_questions = Questions.objects.filter(
                 # difficulty=next_difficulty, 
@@ -92,11 +105,18 @@ def task(request, pk):
         
         userMark = UserMarks.objects.get(question=pk, user_id=request.session['user_id'])
         userMark.attempts += 1
+        class_user = ClassUsers.objects.get(user_id=request.session['user_id'], class_id=question_object.class_id)
         feedback = ""
         next_question_id = -1
 
         if str(response.json()['output']).rstrip() == answer:
             userMark.completed = True
+
+            if class_user.highest_difficulty < question_object.difficulty:
+                class_user.highest_difficulty = question_object.difficulty
+            
+            class_user.last_question = question_object
+
             feedback = "Congratulations, your submission matches the expected answer"
             
             if userMark.attempts <= 5: #throws error currently when user has already attempted more than 5 times
@@ -121,10 +141,12 @@ def task(request, pk):
                 next_question_id = next_question.id
             else:
                 next_question_id = "-1"
-            
+                class_user.class_completed = True
+                  
         else:
             feedback = "Your submission does not match the expected answer, please try again"
         
+        class_user.save()
         userMark.save()
         context = {
             'content':code,
@@ -213,18 +235,48 @@ def create_question(request):
     return render(request, 'base/createTask.html', {'form': form})
 
 # allows teachers to see data for the questions and the grades
+# def track(request):
+#     if request.method == 'POST': 
+#         form = TrackGradeForm(request.POST)
+#         if form.is_valid():
+#             question_object = Questions.objects.filter(id=form.cleaned_data['question_access_code'], passcode=form.cleaned_data['question_passcode'])
+#             if question_object.exists():
+#                 user_record = UserMarks.objects.filter(question=form.cleaned_data['question_access_code'])
+#                 context = {
+#                     'user_record' : user_record,
+#                     'student_count' : user_record.count(),
+#                     'correct_count' : user_record.filter(completed = True).count(),
+#                     'average_attempts' : user_record.aggregate(Avg('attempts'))['attempts__avg'],
+#                     'form' : form,
+#                 }
+#                 return render(request, 'base/tracking.html', context)
+#             else:
+#                 context = {
+#                     'form' : form,
+#                 }
+#                 return render(request, 'base/tracking.html', context)
+#     else:
+#         form = TrackGradeForm()
+#         context = {
+#             'form': form,
+#         }
+#     return render(request, 'base/tracking.html', context)
+
+
 def track(request):
+    
     if request.method == 'POST': 
         form = TrackGradeForm(request.POST)
         if form.is_valid():
-            question_object = Questions.objects.filter(id=form.cleaned_data['question_access_code'], passcode=form.cleaned_data['question_passcode'])
-            if question_object.exists():
-                user_record = UserMarks.objects.filter(question=form.cleaned_data['question_access_code'])
+            classroom_object = ClassRooms.objects.filter(class_id=form.cleaned_data['classroom_access_code'], passcode=form.cleaned_data['classroom_passcode'])
+            if classroom_object.exists():
+                #TODO: users need to actually be added to classes
+                class_users_record = ClassUsers.objects.filter(class_id=form.cleaned_data['classroom_access_code'])
                 context = {
-                    'user_record' : user_record,
-                    'student_count' : user_record.count(),
-                    'correct_count' : user_record.filter(completed = True).count(),
-                    'average_attempts' : user_record.aggregate(Avg('attempts'))['attempts__avg'],
+                    'class_users_record' : class_users_record,
+                    'student_count' : class_users_record.count(),
+                    'completed_count' : class_users_record.filter(class_completed = True).count(),
+                    'highest_difficulty' : class_users_record.aggregate(Avg('highest_difficulty'))['highest_difficulty__avg'],
                     'form' : form,
                 }
                 return render(request, 'base/tracking.html', context)
@@ -239,6 +291,3 @@ def track(request):
             'form': form,
         }
     return render(request, 'base/tracking.html', context)
-
-
-  

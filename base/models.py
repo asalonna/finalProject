@@ -24,6 +24,9 @@ class ClassUsers(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['class_id', 'user_id'], name='constrain_classusers')
         ]
+    def __str__(self):
+        return ("User: " + self.user_id +  " Completed: " + str(self.class_completed)
+                 + " Highest_Difficulty: " + str(self.highest_difficulty))
 
 class UserMarks(models.Model):
     user_id = models.CharField(max_length=10)

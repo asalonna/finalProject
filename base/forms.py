@@ -15,6 +15,10 @@ class UserAccessForm(forms.Form):
     user_id = forms.CharField(label='User ID:', max_length=10)
     classroom_access_code = forms.CharField(label='Classroom Access Code:', max_length=6)
 
+QUESTION_CHOICES = []
+
 class TrackGradeForm(forms.Form):
-    question_access_code = forms.CharField(label='Question Access Code:', max_length=10)
-    question_passcode = forms.CharField(label='Question Password:', max_length=10)
+    classroom_access_code = forms.CharField(label='Question Access Code:', max_length=10)
+    classroom_passcode = forms.CharField(label='Question Password:', max_length=10)
+    #question_list = forms.CharField(label="Select a question to view tracking info", widget=forms.Select(choices=QUESTION_CHOICES))
+    #favorite_fruit= forms.CharField(label='What is your favorite fruit?', widget=forms.Select(choices=FRUIT_CHOICES))
