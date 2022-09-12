@@ -11,15 +11,15 @@
 </style>
 
 <div class="navbar">
-    <a href="/">Home</a>
+    <a href="{% url 'index' %}">Home</a>
     |
-    <a href="access">Access</a>
+    <a href="{% url 'access_question' %}">Access</a>
     |
-    <a href="create_classroom">Create classroom</a>
+    <a href="{% url 'create_classroom' %}">Create classroom</a>
     |
-    <a href="create_question">Create questions</a>
+    <a href="{% url 'create_question' %}">Create questions</a>
     |
-    <a href="track">Track</a>
+    <a href="{% url 'tracking' %}">Track</a>
     |
-    <a href="/">DSL Guide</a>
+    <a href="{% url 'index' %}">DSL Guide</a>
 </div>
