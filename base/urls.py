@@ -11,6 +11,8 @@ urlpatterns = [
     path('next/<str:pk>', views.next_question, name='next'),
     path('end_screen', views.end_of_questions, name='end_screen'),
     path('track', views.track, name='tracking'),
+    path('modify', views.modify, name='modify'),
+    path('delete/<int:pk>', views.delete, name='delete'),
     path('dsl_guide', views.dsl_guide, name='dsl_guide'),
 ]
 

@@ -1,10 +1,10 @@
 from multiprocessing import pool
 import questionMod
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.template import loader
 from django.db.models import Avg
-from .forms import CreateQuestionForm, TrackGradeForm, UserAccessForm, CreateClassroomForm
+from .forms import CreateQuestionForm, TrackGradeForm, UserAccessForm, CreateClassroomForm, ModifyForm
 from .models import ClassUsers, Questions, UserMarks, ClassRooms
 import requests, string
 from random import randint, choices
@@ -291,7 +291,6 @@ def track(request):
         if form.is_valid():
             classroom_object = ClassRooms.objects.filter(class_id=form.cleaned_data['classroom_access_code'], passcode=form.cleaned_data['classroom_passcode'])
             if classroom_object.exists():
-                #TODO: users need to actually be added to classes
                 class_users_record = ClassUsers.objects.filter(class_id=form.cleaned_data['classroom_access_code'])
                 context = {
                     'class_users_record' : class_users_record,
@@ -312,3 +311,35 @@ def track(request):
             'form': form,
         }
     return render(request, 'base/tracking.html', context)
+
+def modify(request):
+    if request.method == 'POST': 
+        form = ModifyForm(request.POST)
+        if form.is_valid():
+            classroom_object = ClassRooms.objects.filter(class_id=form.cleaned_data['classroom_access_code'], passcode=form.cleaned_data['classroom_passcode'])
+            if classroom_object.exists():
+                classroom_object = ClassRooms.objects.get(class_id=form.cleaned_data['classroom_access_code'], passcode=form.cleaned_data['classroom_passcode'])
+                questions = Questions.objects.filter(class_id = classroom_object)
+                context = {
+                    'questions' : questions,
+                    'form' : form,
+                }
+                return render(request, 'base/modify.html', context)
+            else:
+                context = {
+                    'form' : form,
+                }
+                return render(request, 'base/modify.html', context)
+    else:
+        form = ModifyForm()
+        context = {
+            'form': form,
+        }
+    return render(request, 'base/modify.html', context)
+
+def delete(request, pk):
+    question = Questions.objects.get(id=pk)
+    if request.method == 'POST':
+        question.delete()
+        return redirect('modify')
+    return render(request, 'base/delete.html')
