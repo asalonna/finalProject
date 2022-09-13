@@ -24,6 +24,9 @@ def index(request):
     template = loader.get_template('base/index.html')
     return render(request, 'base/index.html')
 
+def dsl_guide(request):
+    return render(request, 'base/dsl_guide.html')
+
 # where students access the questions
 def access(request):
     if request.method == 'POST': 
