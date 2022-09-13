@@ -25,8 +25,9 @@
 <body class="bg-dark text-light">
     {% include 'base/navbar.html' %}
     <div class="container bg-dark text-light">
+        <style> ol {list-style-position: inside;}</style>
         <div class="row gx-4">
-            <h1 class="mt-4">Menu</h1>
+            <!-- <h1 class="mt-4">Menu</h1>
                 <h3><a href="create_classroom">Create classroom</a></h3>
                 <br>
                 <h3><a href="create_question">Create questions</a></h3>
@@ -35,8 +36,45 @@
                 <br>
                 <h3><a href="track">Track questions</a></h3>
                 <br>
-                <h3><a href="">DSL guide</a></h3>
+                <h3><a href="">DSL guide</a></h3> -->
+            <h1 style="text-align: center;"><br>Website Guide</h1>
+            <h2><br>Classrooms</h2>
+            <p>Click the ‘Create classroom’ link on the navigation bar.</p>
+            <ol>
+                <li>Name your classroom in the first field. The name has a limit of XXX characters.</li>
+                <li>The questions in your classroom will need to be given different difficulty levels. In the second text field, you can choose how many questions at a given level need to be correctly answered in order to progress onto the next difficulty.</li>
+                <li>Enter a numerical passcode for your classroom. This passcode will be used to track grades.</li>
+                <li>Once you submit the classroom creation form, an access code for it will appear in the label beneath the submit button.</li>
+            </ol>
+            <h2><br>Creating questions</h2>
+            <p>Click the ‘Create questions’ link on the navigation bar.</p>
+            <ol>
+                <li>Enter a name for your question. Question names are limited to XX characters.</li>
+                <li>Write your question using the DSL.</li>
+                <li>Optionally, you can use the DSL to specify restrictions for your question.</li>
+                <li>Use the DSL to specify the expected answer for your question.</li>
+                <li>Select a difficulty level for your question.</li>
+                <li>Choose how many attempts are allowed for your question.</li>
+                <li>Enter the access code generated in the classroom creation page to assign this question to a class.</li>
+                <li>After you submit the form, you will receive an access code for your question. (This can be used to alter/delete??)</li>
+            </ol>
             
+            <h2><br>Accessing classrooms (and the questions within)</h2>
+            <p>Students need to click the ‘Login’ link on the navigation page to be able to access the questions.</p>
+            <ol>
+                <li>Students should enter their student ID’s here.</li>
+                <li>The classroom access code that was generated after the creation of a classroom can be given to students so they can access the questions.</li>
+            </ol>
+            <h2><br>Answering Questions</h2>
+            <p>After logging in, students will be directed to the question answering page. Students will use the Code Editor to write their answers. The Output box will show the output of their program, as well as error messages if something is amiss. The Feedback box will display whether or not they have successfully completed the question.</p>
+            <p>If the answer is correct, a Next Question button will appear beneath the Submit Work button. This will take the student to the next question.</p>
+            <h2><br>Track Questions</h2>
+            <ol>
+                <li>Enter the classroom access code generated when the classroom was created.</li>
+                <li>Enter the password for the classroom.</li>
+                <li>When you press submit, you will be able to see a Student Summary: This will show you how many students have attempted any question in the class, how many completed the class, and the average highest difficulty reached by students.</li>
+                <li>Classroom Data shows for each user who has accessed the questions whether they completed the class or not, as well as the highest difficulty of the questions they have done successfully.</li>
+            </ol>
         </div>
     </div>
     <script
