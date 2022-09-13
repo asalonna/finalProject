@@ -117,7 +117,7 @@ def task(request, pk):
         next_question_id = -1
 
         #TODO: Make more forgiving? DSL function might already exist?
-        if str(response.json()['output']).rstrip() == answer:
+        if str(response.json()['output']).rstrip() == answer and question.checkCode(code):
             userMark.completed = True
             class_user.completed_questions_per_level += 1
 
@@ -232,10 +232,10 @@ def create_question(request):
     if request.method == 'POST': 
         form = CreateQuestionForm(request.POST)
         if form.is_valid():
-            if questionMod.verify(form.cleaned_data['question_body'] + form.cleaned_data['question_answer']):
+            if questionMod.verify(form.cleaned_data['question_body'] + form.cleaned_data['question_restrictions'] + form.cleaned_data['question_answer']):
                 question = Questions(
                     title = form.cleaned_data['question_title'], 
-                    question_and_answer = form.cleaned_data['question_body'] + form.cleaned_data['question_answer'],
+                    question_and_answer = form.cleaned_data['question_body'] + form.cleaned_data['question_restrictions'] + form.cleaned_data['question_answer'],
                     difficulty = form.cleaned_data['question_difficulty'],
                     max_attempts = form.cleaned_data['max_attempts'],
                     class_id = ClassRooms.objects.get(class_id=form.cleaned_data['class_group']),

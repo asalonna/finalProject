@@ -9,7 +9,7 @@ class ClassRooms(models.Model):
 
 class Questions(models.Model):
     title = models.CharField(max_length=100)
-    question_and_answer = models.CharField(max_length=1000)
+    question_and_answer = models.CharField(max_length=1500)
     class_id = models.ForeignKey(ClassRooms, on_delete=models.CASCADE)
     difficulty = models.PositiveIntegerField()
     max_attempts = models.PositiveIntegerField()
