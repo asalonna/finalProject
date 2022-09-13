@@ -2,6 +2,7 @@ from django import forms
 
 class CreateClassroomForm(forms.Form):
     name = forms.CharField(label='Enter a name for the classroom:', max_length=100)
+    correct_questions_required = forms.IntegerField(label='Enter the minimum number of questions to be answered at each level:', min_value=1)
     passcode = forms.CharField(label='Enter a passcode for your classroom:')
 
 class CreateQuestionForm(forms.Form):

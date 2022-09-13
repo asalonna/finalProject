@@ -43,6 +43,7 @@ def access(request):
                     class_user = ClassUsers(
                         class_id = ClassRooms.objects.get(class_id=form.cleaned_data['classroom_access_code']),
                         user_id = form.cleaned_data['user_id'],
+                        completed_questions_per_level = 0,
                         highest_difficulty = 0,
                         last_question = next_question,
                         class_completed = False,
@@ -90,7 +91,9 @@ def task(request, pk):
     else:
         userMark = UserMarks.objects.get(question=pk, user_id=request.session['user_id'])
 
-    seed = request.session['user_id'] + str(question_object.id)
+    class_user = ClassUsers.objects.get(user_id=request.session['user_id'], class_id=question_object.class_id)
+
+    seed = request.session['user_id'] + str(question_object.id) + str(class_user.completed_questions_per_level)
     question = questionMod.getQuestionObjectString(dsl, seed)
 
     if request.method == 'POST':
@@ -109,12 +112,14 @@ def task(request, pk):
         answer = question.answerText
         
         userMark.attempts += 1
-        class_user = ClassUsers.objects.get(user_id=request.session['user_id'], class_id=question_object.class_id)
+        
         feedback = ""
         next_question_id = -1
 
+        #TODO: Make more forgiving? DSL function might already exist?
         if str(response.json()['output']).rstrip() == answer:
             userMark.completed = True
+            class_user.completed_questions_per_level += 1
 
             if class_user.highest_difficulty < question_object.difficulty:
                 class_user.highest_difficulty = question_object.difficulty
@@ -123,11 +128,16 @@ def task(request, pk):
 
             feedback = "Congratulations, your submission matches the expected answer"
             
-            if userMark.attempts <= question_object.max_attempts: #throws error currently when user has already attempted more than 5 times
+            # need to store a count of questions answered of each level
+            # then compare that to required number
+            classroom_object = question_object.class_id
+            if userMark.attempts <= question_object.max_attempts and class_user.completed_questions_per_level >= classroom_object.correct_questions_required:
                 next_difficulty = question_object.difficulty + 1
+                class_user.completed_questions_per_level = 0
             elif userMark.attempts >= question_object.max_attempts * 2:
                 if question_object.difficulty > 1:
                     next_difficulty = question_object.difficulty - 1
+                    class_user.completed_questions_per_level = 0
                 else:
                     next_difficulty = 1
             else:
@@ -208,6 +218,7 @@ def create_classroom(request):
             classroom = ClassRooms(
                 class_id = class_id,
                 name = form.cleaned_data['name'],
+                correct_questions_required = form.cleaned_data['correct_questions_required'],
                 passcode = form.cleaned_data['passcode'],
             )
             classroom.save()

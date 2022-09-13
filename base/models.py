@@ -4,6 +4,7 @@ from django.db import models
 class ClassRooms(models.Model):
     class_id = models.CharField(max_length=6, primary_key=True)
     name = models.CharField(max_length=100)
+    correct_questions_required = models.PositiveIntegerField()
     passcode = models.CharField(max_length=10)
 
 class Questions(models.Model):
@@ -18,6 +19,7 @@ class Questions(models.Model):
 class ClassUsers(models.Model):
     class_id = models.ForeignKey(ClassRooms, on_delete=models.CASCADE)
     user_id = models.CharField(max_length=10)
+    completed_questions_per_level = models.PositiveIntegerField()
     highest_difficulty = models.PositiveIntegerField()
     last_question = models.ForeignKey(Questions, on_delete=models.CASCADE)
     class_completed = models.BooleanField()
