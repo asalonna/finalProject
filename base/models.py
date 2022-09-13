@@ -11,6 +11,7 @@ class Questions(models.Model):
     question_and_answer = models.CharField(max_length=1000)
     class_id = models.ForeignKey(ClassRooms, on_delete=models.CASCADE)
     difficulty = models.PositiveIntegerField()
+    max_attempts = models.PositiveIntegerField()
     def __str__(self):
         return self.title
 

@@ -123,9 +123,9 @@ def task(request, pk):
 
             feedback = "Congratulations, your submission matches the expected answer"
             
-            if userMark.attempts <= 5: #throws error currently when user has already attempted more than 5 times
+            if userMark.attempts <= question_object.max_attempts: #throws error currently when user has already attempted more than 5 times
                 next_difficulty = question_object.difficulty + 1
-            elif userMark.attempts >= 10:
+            elif userMark.attempts >= question_object.max_attempts * 2:
                 if question_object.difficulty > 1:
                     next_difficulty = question_object.difficulty - 1
                 else:
@@ -226,6 +226,7 @@ def create_question(request):
                     title = form.cleaned_data['question_title'], 
                     question_and_answer = form.cleaned_data['question_body'] + form.cleaned_data['question_answer'],
                     difficulty = form.cleaned_data['question_difficulty'],
+                    max_attempts = form.cleaned_data['max_attempts'],
                     class_id = ClassRooms.objects.get(class_id=form.cleaned_data['class_group']),
                 )
                 question.save()
