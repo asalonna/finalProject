@@ -77,8 +77,7 @@ def task(request, pk):
     question_object = Questions.objects.get(id=pk)
     question_title = question_object.title
     dsl = question_object.question_and_answer
-    question = questionMod.getQuestionObjectString(dsl, 20)
-
+    
     userMark = None
     if not UserMarks.objects.filter(question=pk, user_id=request.session['user_id']).exists():
         userMark = UserMarks(
@@ -90,6 +89,9 @@ def task(request, pk):
         userMark.save()
     else:
         userMark = UserMarks.objects.get(question=pk, user_id=request.session['user_id'])
+
+    seed = request.session['user_id'] + str(question_object.id)
+    question = questionMod.getQuestionObjectString(dsl, seed)
 
     if request.method == 'POST':
 
