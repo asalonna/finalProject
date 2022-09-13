@@ -37,42 +37,49 @@
                         <label for="questionName" class="mb-1">
                             Enter a name for the question:
                         </label>
+                        <br>
                         {{ form.question_title }}
                     </div>
                     <div class="mb-3">
                         <label for="questionBody" class="mb-1">
-                            Enter your question:the question:
+                            Enter your question:
                         </label>
+                        <br>
                         {{ form.question_body }}
                     </div>
                     <div class="mb-3">
                         <label for="question_restrictions" class="mb-1">
                             Optional: Enter the restrictions for your question:
                         </label>
+                        <br>
                         {{ form.question_restrictions }}
                     </div>
                     <div class="mb-3">
                         <label for="questionAnswer" class="mb-1">
                             Enter the expected answer to your question:
                         </label>
+                        <br>
                         {{ form.question_answer }}
                     </div>
                     <div class="mb-3">
                         <label for="questionDifficulty" class="mb-1">
                             Enter a difficulty for your question:
                         </label>
+                        <br>
                         {{ form.question_difficulty }}
                     </div>
                     <div class="mb-3">
                         <label for="max_attempts" class="mb-1">
                             Enter the maximum number of attempts to be allowed:
                         </label>
+                        <br>
                         {{ form.max_attempts }}
                     </div>
                     <div class="mb-3">
                         <label for="questionClass" class="mb-1">
                             Enter a class group name for your question:
                         </label>
+                        <br>
                         {{ form.class_group }}
                     </div>
                     <input type="submit" value="Submit">
