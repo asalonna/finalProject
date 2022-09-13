@@ -50,14 +50,11 @@
 
         <section class="bg-dark text-light p-2">
             <div class="container">
-                <div class="row g-4">
-                    <div class="col-6">
+                <div class="row justify-content-between">
+                    <div class="col-md-6">
                         <h3 class="mb-3">Code Editor</h3>
-                        <!--<textarea cols="70" rows="20"></textarea>-->
-                        <!--Stuff-->
-						
-                        <textarea form="CodeForm" id="codemirror-textarea" name="codemirror-textarea" class="codemirror-textarea form-control">{{ content }}</textarea>
-						{% load static %}
+                        <textarea form="CodeForm" id="codemirror-textarea" name="codemirror-textarea" class="codemirror-textarea form-control" style="width:40%">{{ content }}</textarea>
+                        {% load static %}
                         <link rel="stylesheet" type="text/css" href="{% static 'mycode/plugin/codemirror/lib/codemirror.css' %}">
                         <script type="text/javascript" src="{% static 'mycode/jquery.min.js' %}"></script>
                         <script type="text/javascript" src="{% static 'mycode/plugin/codemirror/lib/codemirror.js' %}"></script>
@@ -71,48 +68,29 @@
                                     mode : "text/x-java",
                                     matchBrackets: true
                                 });
-								editor.setSize(600, 607);
+                                editor.setSize(600, 607);
                             });
-							
                         </script>
                     </div>
-                    <div class="col-md">
+                    <div class="col-md-6 ">
                         <h3 class="mb-3">Output</h3>
-                        <textarea readonly style="resize: none;" cols="50" rows="5">
-{{ compiler_output }}
-						</textarea>
+                        <textarea readonly style="resize: none;" cols="50" rows="5">{{ compiler_output }}</textarea>
                         <h3 class="mb-3 mt-5">Feedback</h3>
-                        <textarea readonly class="mb-3" cols="50" rows="8">
-{{ feedback }}
-						</textarea><br>
+                        <textarea readonly class="mb-3" cols="50" rows="8">{{ feedback }}</textarea><br>
                         <form id="CodeForm" action="/task/{{ pk }}" method="post">
-							{% csrf_token %}
-							<input type="submit" value="Submit Work" class="btn btn-primary me-4 mb-4 display-flex"></button>
-						</form>
+                            {% csrf_token %}
+                            <input type="submit" value="Submit Work" class="btn btn-primary me-4 mb-4 display-flex"></button>
+                        </form>
                         {% if feedback == "Congratulations, your submission matches the expected answer" %} 
                         <form id="NextQuestionForm" action="/next/{{ next_pk }}" method="post">
-							{% csrf_token %}
-							<input type="submit" value="Next Question" class="btn btn-secondary me-4"></button>
-						</form>
+                            {% csrf_token %}
+                            <input type="submit" value="Next Question" class="btn btn-secondary me-4"></button>
+                        </form>
                         {% endif %}
-                        </div>
-                    </div>
-                    <div class="col-md-6 offset-md-6 mt-5">
-                        
                     </div>
                 </div>
             </div>
         </section>
-    
-
-
-
-
-
-
-
-
-
     <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
