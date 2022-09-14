@@ -25,12 +25,90 @@
 <body class="bg-dark text-light">
     {% include 'base/navbar.html' %}
     <div class="container bg-dark text-light">
-        <style> ol {list-style-position: inside;}</style>
         <div class="row gx-4">
+
             <h1 style="text-align: center;"><br>DSL Guide</h1>
-            <h2><br>Classrooms</h2>
-            <p>Click the ‘Create classroom’ link on the navigation bar.</p>
+
+            <h2><br>Introduction</h2>
+            <p>This DSL is designed to assist the creation of programming questions, by allowing generation of a range of questions allowing the use of random values for each student, and their corresponding expected answers.</p>
+            <p>This DSL also allows implementation of restrictions in the code. With this DSL, you can make it so that students have to use a variety of different concepts to answer your questions.</p>
+            <p>The DSL also includes answer checking. This helps relieve the burden of having to spend a lot of marking revision questions in a large class, as well as forces students to have to use specific concepts in their answers (such as an if statement).</p>
             
+            <h2><br>Question Creation</h2>
+            <p>To define a question, you should start with the keyword “Question” and Content must be defined between “&#60;&#62;” tags. 
+            <p>There must be a space between “Question” and the start of the tags.</p>
+            <p>For example, a simple Hello World would be written as follows:</p>
+            <p style="margin-left: 40px">Question &#60;”Print out the string ‘Hello World!’”&#62;</p>
+            <h4>Text</h4>
+            <p>Text is written as anything between two speech marks and can contain any non-speech mark character.</p>
+            <h4>Random Integers</h4>
+            <p>Random integers can be specified by typing %randInt and then a variable name. It must also end with %:</p>
+            <p style="margin-left: 40px">%randInt random_number%</p>
+            <p>When generating a random integer, you must also declare the range in which you want the random number to occur, following this format:</p>
+            <p style="margin-left: 40px">%randInt random_number = x,y%.</p>
+            <p>x is the start of the range and y is the limit. x and y must be integers.</p>
+            <p>An example question using this is:</p>
+            <p style="margin-left: 40px">Question &#60;"Print the number " %randInt x = 1,100% ". (HINT: Use ‘System.out.println();’)"&#62;Answer &#60;x&#62;</p>
+            <h4>Random Float</h4>
+            <p>Same as random integers, except you write %randFloat random_float% for example.</p>
+            <h4>Random Order</h4>
+            <p>Random Order allows you to randomise the order of elements in a given array.</p>
+            <p>It is declared by writing #{items here}#.</p>
+            <p>The items in the array must be separated by a comma.</p>
+            <p style="margin-left: 40px">Example: #{North, East, South, West}#</p>
+
+            <h2><br>Answer Checking</h2>
+            <p>Answer checking in the DSL works using expected output matching.</p>
+            <p>Answers must be declared with the keyword “Answer” then followed by “&#60;&#62;” with content between the tags.</p>
+            <p>The answer to the hello world question above would be written:</p>
+            <p style="margin-left: 40px">Answer &#60;”Hello World!”&#62;</p>
+            <h4>Text</h4>
+            <p>Answer text must be declared within speech marks (“”).</p>
+            <h4>Script</h4>
+            <p>An Answer can also be the output of a script.</p>
+            <p>Scripts are declared as follows:</p>
+            <p style="margin-left: 40px">Python { {15*37} }</p>
+            <h4>Functions</h4>
+            <p>There are two built-in functions that users can utilise.
+            <p>The first is Order:</p>
+            <p>This function makes the expected answer an ordered array for example, . This can also be used with randomly generated numbers.</p>
+            <p>The second is Sequence:</p>
+            <p> Can create answers involving a start, step, and an end.</p>
+            <p>Example:</p>
+            <p style="margin-left: 40px">Question &#60;"Print the numbers " %randInt x = 1,5% " up to (but not including) " %randInt y = 10,20% ", separated by commas. This question requires the use of 1 for loop. (HINT: Use System.out.print())"&#62;</p>
+            <p style="margin-left: 40px">Answer &#60;sequence{from x until y step 1}&#62;</p>
+            <h4>Variables</h4>
+            <p>Example: You can generate a number and store it in a variable, say x. You can reference x as the Answer too.</p>
+            <p style="margin-left: 40px">Question &#60;"Print the number " %randInt x = 1,100% ". (HINT: Use ‘System.out.println();’)"&#62;</p>
+            <p style="margin-left: 40px">Answer &#60;x&#62;</p>
+            <h4>Repetitions</h4>
+            <p>Can specify how many times something should be done. Example: how many times a string should be printed. This can also use the randomly generated integers.
+            <p>Example:</p>
+            <p style="margin-left: 40px">Question &#60;"Print the string ‘I love Java!’ " %randInt x = 4,9% " times, each on the same line with no delimiter. This question requires the use of 1 for loop."&#62;</p>
+            <p style="margin-left: 40px">Answer &#60;"I love Java!"*x&#62;</p>
+            
+            <h2><br>Restrictions</h2>
+            <p>Like Question and Answer, Restriction is declared:</p>
+            <p style="margin-left: 40px">Restrict &#60;content&#62;</p>
+            <p>When declaring multiple restrictions, it is advised to include a space between them for readability.</p>
+            <p>You can declare different types of restrictions for the same question, such as both an if and a for loop:</p>
+            <p style="margin-left: 40px">Restrict &#60;for if&#62;</p>
+            <p>Note: This does not take into account the order in which the restrictions are written. For the above example, the DSL will consider an answer to be correct if it uses at least one for loop and one if statement, and the order will not cause a submission to be marked as wrong.</p>
+            <h4>If</h4>
+            <p>You can specify how many times an If statement should be used.</p>
+            <p style="margin-left: 40px">Restrict &#60;if&#62;</p>
+            <p>Multiple ifs:</p>
+            <p style="margin-left: 40px">Restrict &#60;if if if&#62;</p>
+            <h4>For</h4>
+            <p>You can specify how many times a For loop should be used.</p>
+            <p style="margin-left: 40px">Restrict &#60;for&#62;</p>
+            <p>Multiple for loops:</p>
+            <p style="margin-left: 40px">Restrict &#60;for for&#62;</p>
+            <h4>While</h4>
+            <p>You can specify how many times a While loop should be used.</p>
+            <p style="margin-left: 40px">Restrict &#60;while&#62;</p>
+            <p>Multiple while loops:</p>
+            <p style="margin-left: 40px">Restrict &#60;while while&#62;</p>
         </div>
     </div>
     <script
