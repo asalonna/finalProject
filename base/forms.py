@@ -30,8 +30,9 @@ QUESTION_CHOICES = []
 class TrackGradeForm(forms.Form):
     classroom_access_code = forms.CharField(label='Classroom Access Code:', max_length=10)
     classroom_passcode = forms.CharField(label='Classroom Password:', max_length=10)
-    #question_list = forms.CharField(label="Select a question to view tracking info", widget=forms.Select(choices=QUESTION_CHOICES))
-    #favorite_fruit= forms.CharField(label='What is your favorite fruit?', widget=forms.Select(choices=FRUIT_CHOICES))
+
+class TrackQuestionForm(forms.Form):
+    question_list = forms.CharField(label="Select a question to view tracking info", widget=forms.Select(choices=QUESTION_CHOICES))
 
 class ModifyForm(forms.Form):
     classroom_access_code = forms.CharField(label='Classroom Access Code:', max_length=10)

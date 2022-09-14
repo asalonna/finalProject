@@ -290,17 +290,33 @@ def track(request):
     if request.method == 'POST': 
         form = TrackGradeForm(request.POST)
         if form.is_valid():
-            classroom_object = ClassRooms.objects.filter(class_id=form.cleaned_data['classroom_access_code'], passcode=form.cleaned_data['classroom_passcode'])
-            if classroom_object.exists():
-                class_users_record = ClassUsers.objects.filter(class_id=form.cleaned_data['classroom_access_code'])
-                context = {
-                    'class_users_record' : class_users_record,
-                    'student_count' : class_users_record.count(),
-                    'completed_count' : class_users_record.filter(class_completed = True).count(),
-                    'highest_difficulty' : class_users_record.aggregate(Avg('highest_difficulty'))['highest_difficulty__avg'],
-                    'form' : form,
-                }
+            if request.POST.get("class_button"):
+                classroom_object = ClassRooms.objects.filter(class_id=form.cleaned_data['classroom_access_code'], passcode=form.cleaned_data['classroom_passcode'])
+                if classroom_object.exists():
+                    class_users_record = ClassUsers.objects.filter(class_id=form.cleaned_data['classroom_access_code'])
+                    context = {
+                        'class_users_record' : class_users_record,
+                        'student_count' : class_users_record.count(),
+                        'completed_count' : class_users_record.filter(class_completed = True).count(),
+                        'highest_difficulty' : class_users_record.aggregate(Avg('highest_difficulty'))['highest_difficulty__avg'],
+                    }
+                    return render(request, 'base/tracking.html', context)
+           
+            elif request.POST.get("question_button"):
+                question_object = Questions.objects.filter(class_id = ClassRooms.objects.get(class_id=form.cleaned_data['classroom_access_code']))
+               
+                if question_object.exists():
+                    #user_record = UserMarks.objects.filter(question=form.cleaned_data['question_access_code'])
+                    context = {
+                        # 'user_record' : user_record,
+                        # 'student_count' : user_record.count(),
+                        # 'correct_count' : user_record.filter(completed = True).count(),
+                        # 'average_attempts' : user_record.aggregate(Avg('attempts'))['attempts__avg'],
+                        'form' : form,
+                        'questions': question_object,
+                    }
                 return render(request, 'base/tracking.html', context)
+            
             else:
                 context = {
                     'form' : form,
