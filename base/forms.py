@@ -1,4 +1,6 @@
 from django import forms
+from django.forms import ModelForm
+from .models import Questions
 
 class CreateClassroomForm(forms.Form):
     name = forms.CharField(label='Enter a name for the classroom:', max_length=100)
@@ -13,6 +15,11 @@ class CreateQuestionForm(forms.Form):
     class_group = forms.CharField(label='Enter a class access code for your question:', max_length=50)
     question_difficulty = forms.IntegerField(label='Enter a difficulty for your question:', min_value=1)
     max_attempts = forms.IntegerField(label='Enter the maximum number of attempts to be allowed:', min_value=1)
+
+class EditQuestionForm(ModelForm):
+    class Meta:
+        model=Questions
+        exclude = ['class_id']
 
 class UserAccessForm(forms.Form):
     user_id = forms.CharField(label='User ID:', max_length=10)

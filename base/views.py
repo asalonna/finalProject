@@ -1,10 +1,11 @@
+from distutils.log import error
 from multiprocessing import pool
 import questionMod
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.template import loader
 from django.db.models import Avg
-from .forms import CreateQuestionForm, TrackGradeForm, UserAccessForm, CreateClassroomForm, ModifyForm
+from .forms import CreateQuestionForm, TrackGradeForm, UserAccessForm, CreateClassroomForm, ModifyForm, EditQuestionForm
 from .models import ClassUsers, Questions, UserMarks, ClassRooms
 import requests, string
 from random import randint, choices
@@ -343,3 +344,24 @@ def delete(request, pk):
         question.delete()
         return redirect('modify')
     return render(request, 'base/delete.html')
+
+def edit(request, pk):
+    question = Questions.objects.get(id=pk)
+    form = EditQuestionForm(instance=question)
+    if request.method == 'POST':
+        form = EditQuestionForm(request.POST, instance=question)
+        if form.is_valid():
+            if questionMod.verify(form.cleaned_data['question_and_answer']):
+                form.save()
+                return redirect('modify')
+            else:
+                error_message = "The DSL syntax is incorrect"
+                context = {
+                    'error_message' : error_message,
+                    'form' : form,
+                }
+                return render(request, 'base/edit.html', context) 
+    context = {
+        'form' : form,
+    }
+    return render(request, 'base/edit.html', context)

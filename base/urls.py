@@ -13,6 +13,7 @@ urlpatterns = [
     path('track', views.track, name='tracking'),
     path('modify', views.modify, name='modify'),
     path('delete/<int:pk>', views.delete, name='delete'),
+    path('edit/<int:pk>', views.edit, name='edit'),
     path('dsl_guide', views.dsl_guide, name='dsl_guide'),
 ]
 

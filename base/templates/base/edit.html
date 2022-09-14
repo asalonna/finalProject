@@ -27,31 +27,39 @@
     <div class="container bg-dark text-light">
         <div class="row gx-4">
             <h1>Modify</h1>
-            <form action="{% url 'modify' %}" method="post">
+            <form action="" method="post">
                 {% csrf_token %}
                 <div class="mb-3">
-                    <label for="classroom_access_code" class="mb-1">
-                        Classroom Access Code:
+                    <label for="questionName" class="mb-1">
+                        Edit the name for the question:
                     </label>
                     <br>
-                    {{ form.classroom_access_code }}
+                    {{ form.title }}
                 </div>
                 <div class="mb-3">
-                    <label for="classroom_passcode" class="mb-1">
-                        Classroom Password:
+                    <label for="questionBody" class="mb-1">
+                        Enter your DSL:
                     </label>
                     <br>
-                    {{ form.classroom_passcode }}
+                    {{ form.question_and_answer }}
                 </div>
-                <input type="submit" value="Submit">
+                <div class="mb-3">
+                    <label for="questionDifficulty" class="mb-1">
+                        Edit the difficulty for your question:
+                    </label>
+                    <br>
+                    {{ form.difficulty }}
+                </div>
+                <div class="mb-3">
+                    <label for="max_attempts" class="mb-1">
+                        Edit the maximum number of attempts to be allowed:
+                    </label>
+                    <br>
+                    {{ form.max_attempts }}
+                </div>
+                <input type="submit" value="Confirm">
             </form>
-            <p><br></p>
-            {% for question in questions %}
-                <div>
-                    <p>{{ question.id }}: {{ question.title }} <a href="{% url 'edit' question.id %}">Edit</a> | <a href="{% url 'delete' question.id %}">Delete</a></p>
-                    <hr>
-                </div>
-            {% endfor %}
+            <p>{{ error_message }}</p>
         </div>
     </div>
     <script
