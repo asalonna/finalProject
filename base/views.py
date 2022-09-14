@@ -301,30 +301,25 @@ def track(request):
                         'completed_count' : class_users_record.filter(class_completed = True).count(),
                         'highest_difficulty' : class_users_record.aggregate(Avg('highest_difficulty'))['highest_difficulty__avg'],
                         'questions': question_object,
-                        'form': form
+                        'form': form,
                     }
                     return render(request, 'base/tracking.html', context)
-                    
-            elif request.POST.get("question_button"):
-                question_object = Questions.objects.filter(class_id = ClassRooms.objects.get(class_id=form.cleaned_data['classroom_access_code']))
-               
-                if question_object.exists():
-                    context = {
-                        'form' : form,
-                        'questions': question_object,
-                    }
-                return render(request, 'base/tracking.html', context)
-            
-            else:
+        else:
+            if request.POST.get("question_button"):
+                question_id = request.POST['dropdown']
+                question = Questions.objects.get(id=question_id)
+                user_marks = UserMarks.objects.filter(question = question)
+                question_object = Questions.objects.filter(class_id = question.class_id)
                 context = {
+                    'questions': question_object,
+                    'user_marks': user_marks,
                     'form' : form,
                 }
                 return render(request, 'base/tracking.html', context)
-    else:
-        form = TrackGradeForm()
-        context = {
-            'form': form,
-        }
+    form = TrackGradeForm()
+    context = {
+        'form': form,
+    }
     return render(request, 'base/tracking.html', context)
 
 def modify(request):

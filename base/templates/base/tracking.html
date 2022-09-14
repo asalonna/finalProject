@@ -32,7 +32,7 @@
                 <p class="lead mt-3">
                     Enter classroom access code to see student grades
                 </p>
-                <form action="/track" method="post">
+                <form action="" method="post">
                     {% csrf_token %}
                     <div class="mb-3">
                         <label for="access_code" class="col-form-label">
@@ -74,13 +74,19 @@
                     </div>
                     <div class="tab-pane fade" id="question" role="tabpanel" aria-labelledby="question-tab">
                         <form action="" method="post">
-                            <select>
+                            {% csrf_token %}
+                            <select name="dropdown">
                                 {% for question in questions %} 
-                                    <option value="name">{{ question.id }}:{{ question.title }}</option>
+                                    <option value="{{ question.id }}">{{ question.id }}:{{ question.title }}</option>
                                 {% endfor %}    
                             </select>   
+                            <input name="question_button" type="submit" value="Submit">
                         </form>
-                        <input name="question_button" type="submit" value="Submit">
+                       
+                        {% for user_mark in user_marks %}
+                            <p>{{ user_mark }}
+                            </p>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
