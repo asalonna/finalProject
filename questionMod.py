@@ -1,6 +1,6 @@
 from textx import metamodel_from_file
 import random
-
+import javalang
 
 class Question(object):
 
@@ -87,30 +87,84 @@ class Question(object):
         return (''.join(answer.split()).lower() == ''.join(self.answerText.split()).lower())
 
     def checkCode(self, code):
-        last_if = 0
-        last_for = 0
-        last_while = 0
+        tree = javalang.parse.parse(code)
+        if_statement = "<class 'javalang.tree.IfStatement'>"
+        for_statement = "<class 'javalang.tree.ForStatement'>"
+        while_statement = "<class 'javalang.tree.WhileStatement'>"
+        INDENT_PER_LEVEL = -3
+        
+        all_restrictions_valid = True
+
         for r in self.model.restrictions:
-            if r.x == "if":
-                position = code.find("if", last_if)
-                if position == -1:
-                    return False
-                else:
-                    last_if = position + 1
-                
-            elif r.x == "for":
-                position = code.find("for", last_for)
-                if position == -1:
-                    return False
-                else:
-                    last_for = position + 1
-            elif r.x == "while":
-                position = code.find("while", last_while)
-                if position == -1:
-                    return False
-                else:
-                    last_while = position + 1
-        return True
+            restriction_valid = False
+            listy = [r.x]
+            number_of_levels = 0
+            while r.nest is not None:
+                r = r.nest
+                listy.append(r.x)
+                number_of_levels += 1
+            
+            poppy = listy.pop()
+            if poppy == 'if':
+                for path, node in tree.filter(javalang.tree.IfStatement):
+                    node_valid = True
+                    listy2 = listy.copy()
+                    index = INDENT_PER_LEVEL
+                    while len(listy2) > 0:
+                        popped = listy2.pop()
+                        if popped == 'for':
+                            if str(type(path[index])) != for_statement:
+                                node_valid = False
+                        elif popped == 'if':
+                            if str(type(path[index])) != if_statement:
+                                node_valid = False
+                        elif popped == 'while':
+                            if str(type(path[index])) != while_statement:
+                                node_valid = False
+                        index += INDENT_PER_LEVEL
+                    if node_valid == True:
+                        restriction_valid = True
+            elif poppy == 'for':
+                for path, node in tree.filter(javalang.tree.ForStatement):
+                    node_valid = True
+                    listy2 = listy.copy()
+                    index = INDENT_PER_LEVEL
+                    while len(listy2) > 0:
+                        popped = listy2.pop()
+                        if popped == 'for':
+                            if str(type(path[index])) != for_statement:
+                                node_valid = False
+                        elif popped == 'if':
+                            if str(type(path[index])) != if_statement:
+                                node_valid = False
+                        elif popped == 'while':
+                            if str(type(path[index])) != while_statement:
+                                node_valid = False
+                        index += INDENT_PER_LEVEL
+                    if node_valid == True:
+                        restriction_valid = True
+            elif poppy == 'while':
+                for path, node in tree.filter(javalang.tree.WhileStatement):
+                    node_valid = True
+                    listy2 = listy.copy()
+                    index = INDENT_PER_LEVEL
+                    while len(listy2) > 0:
+                        popped = listy2.pop()
+                        if popped == 'for':
+                            if str(type(path[index])) != for_statement:
+                                node_valid = False
+                        elif popped == 'if':
+                            if str(type(path[index])) != if_statement:
+                                node_valid = False
+                        elif popped == 'while':
+                            if str(type(path[index])) != while_statement:
+                                node_valid = False
+                        index += INDENT_PER_LEVEL
+                    if node_valid == True:
+                        restriction_valid = True
+            if restriction_valid == False:
+                all_restrictions_valid = False
+        return all_restrictions_valid
     
 def verify(strDSL):
     try:
@@ -134,4 +188,3 @@ def getQuestionObjectString(strDSL, question_seed):
     question = Question()
     question.interpret(question_model, question_seed)
     return question
-
