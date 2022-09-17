@@ -181,6 +181,7 @@ def task(request, pk):
             'content':default,
             'question_title':question_title,
             'question':question.questionText,
+            'feedback':"",
             'pk':pk,
         }
         return HttpResponse(template.render(context, request))
