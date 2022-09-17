@@ -320,7 +320,7 @@ def delete(request, pk):
         return redirect('modify')
     return render(request, 'base/delete.html')
 
-# edits questio
+# edits question
 def edit(request, pk):
     question = Questions.objects.get(id=pk)
     form = EditQuestionForm(instance=question)

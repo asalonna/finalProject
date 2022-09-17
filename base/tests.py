@@ -92,7 +92,7 @@ class TaskTestCase(TestCase):
                                                     }"""})
         correct = UserMarks.objects.filter(user_id='test_user', question=Questions.objects.get(id=1)).exists()
         #self.assertTrue(correct)
-        1
+        self.assertTrue(True)
 
 class NextQuestionTestCase(TestCase):
 
@@ -188,22 +188,105 @@ class CreateQuestionTestCase(TestCase):
 class TrackTestCase(TestCase):
 
     def setUp(self):
-        1
+        ClassRooms.objects.create(
+            class_id = 'aaaaaa',
+            name = 'tests_classroom',
+            correct_questions_required = 1,
+            passcode = 123,
+        )
+    
+    def test_url_exists(self):
+        response = self.client.get('/track')
+        self.assertEqual(response.status_code, 200)
+
+    def test_tracking_form(self):
+        c = Client()
+        response = c.post('/track', {
+            'classroom_access_code' : 'aaaaaa',
+            'classroom_passcode' : 123,
+        })
+        # TODO: need to search context dictionary?
+        self.assertTrue(True)
 
 class ModifyTestCase(TestCase):
 
     def setUp(self):
-        1
+        ClassRooms.objects.create(
+            class_id = 'aaaaaa',
+            name = 'tests_classroom',
+            correct_questions_required = 1,
+            passcode = 123,
+        )
+    
+    def test_url_exists(self):
+        response = self.client.get('/modify')
+        self.assertEqual(response.status_code, 200)
+
+    def test_modify_form(self):
+        c = Client()
+        response = c.post('/modify', {
+            'classroom_access_code' : 'aaaaaa',
+            'classroom_passcode' : 123,
+        })
+        # TODO: need to search context dictionary?
+        self.assertTrue(True)
 
 class DeleteTestCase(TestCase):
 
     def setUp(self):
-        1
+        ClassRooms.objects.create(
+            class_id = 'aaaaaa',
+            name = 'tests_classroom',
+            correct_questions_required = 1,
+            passcode = 123,
+        )
+        Questions.objects.create(
+            title = 'test_question',
+            question_and_answer = 'Question <"Test"> Answer <"Test">',
+            class_id = ClassRooms.objects.get(class_id='aaaaaa'),
+            difficulty = 1,
+            max_attempts = 5,
+        )
+    
+    def test_url_exists(self):
+        response = self.client.get('/delete/1')
+        self.assertEqual(response.status_code, 200)
+
+    def test_deleted(self):
+        c = Client()
+        response = c.post('/delete/1', {})
+        self.assertFalse(Questions.objects.filter(id=1).exists())
 
 class EditTestCase(TestCase):
 
     def setUp(self):
-        1
+        ClassRooms.objects.create(
+            class_id = 'aaaaaa',
+            name = 'tests_classroom',
+            correct_questions_required = 1,
+            passcode = 123,
+        )
+        Questions.objects.create(
+            title = 'test_question',
+            question_and_answer = 'Question <"Test"> Answer <"Test">',
+            class_id = ClassRooms.objects.get(class_id='aaaaaa'),
+            difficulty = 1,
+            max_attempts = 5,
+        )
+
+    def test_url_exists(self):
+        response = self.client.get('/edit/1')
+        self.assertEqual(response.status_code, 200)
+
+    def test_edit(self):
+        c = Client()
+        response = c.post('/edit/1', {
+            'title' : 'test_edit_question',
+            'question_and_answer' : 'Question <"Test"> Answer <"Test">',
+            'difficulty' : 1,
+            'max_attempts' : 5,
+        })
+        self.assertEqual(Questions.objects.get(id=1).title, 'test_edit_question')
 
 # testing models
 
