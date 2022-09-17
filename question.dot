@@ -1,0 +1,85 @@
+
+    digraph textX {
+    fontname = "Bitstream Vera Sans"
+    fontsize = 8
+    node[
+        shape=record,
+        style=filled,
+        fillcolor=aliceblue
+    ]
+    nodesep = 0.3
+    edge[dir=black,arrowtail=empty]
+
+
+2956353042416[ label="{Program|}"]
+
+2956353046256[ label="{RestrictContent|x: OBJECT\l}"]
+
+2956353808320[ label="{*Content|}"]
+
+2956353788160[ label="{Text|x: STRING\l}"]
+
+2956353810240[ label="{Field|x: STRING\l}"]
+
+2956353794880[ label="{RandInt|variableName: STRING\lx: INT\ly: INT\l}"]
+
+2956353789120[ label="{RandFloat|variableName: STRING\lx: FLOAT\ly: FLOAT\l}"]
+
+2956353806400[ label="{RandOrder|item: list[STRING]\l}"]
+
+2956353793920[ label="{AnswerContent|repeat: OBJECT\l}"]
+
+2956353785280[ label="{*AnswerContentType|}"]
+
+2956353804480[ label="{Variable|name: STRING\l}"]
+
+2956353799680[ label="{*Function|}"]
+
+2956353780480[ label="{Order|list: list[FunctionItem]\l}"]
+
+2956353796800[ label="{Sequence|start: FunctionItem\lend: FunctionItem\lstep: FunctionItem\l}"]
+
+2956353802560[ label="{Script|script: STRING\l}"]
+
+
+
+2956353042416 -> 2956353808320[arrowtail=diamond, dir=both, headlabel="content 1..*"]
+2956353042416 -> 2956353046256[arrowtail=diamond, dir=both, headlabel="restrictions 0..*"]
+2956353042416 -> 2956353793920[arrowtail=diamond, dir=both, headlabel="answerContents 1..*"]
+2956353041456[ label="{*OBJECT|}"]
+
+2956353046256 -> 2956353046256[arrowtail=diamond, dir=both, headlabel="nest "]
+2956353808320 -> 2956353788160 [dir=back]
+2956353808320 -> 2956353810240 [dir=back]
+2956353808320 -> 2956353794880 [dir=back]
+2956353808320 -> 2956353789120 [dir=back]
+2956353808320 -> 2956353806400 [dir=back]
+2956353793920 -> 2956353785280[arrowtail=diamond, dir=both, headlabel="contentType "]
+2956353041456[ label="{*OBJECT|}"]
+
+2956353785280 -> 2956353788160 [dir=back]
+2956353785280 -> 2956353802560 [dir=back]
+2956353785280 -> 2956353799680 [dir=back]
+2956353785280 -> 2956353804480 [dir=back]
+2956353799680 -> 2956353780480 [dir=back]
+2956353799680 -> 2956353796800 [dir=back]
+match_rules [ shape=plaintext, label=< <table>
+	<tr>
+		<td><b>Comment</b></td><td>\/\/.*$</td>
+	</tr>
+	<tr>
+		<td><b>For</b></td><td>for</td>
+	</tr>
+	<tr>
+		<td><b>FunctionItem</b></td><td>INT|[^=\s&gt;,{}]*</td>
+	</tr>
+	<tr>
+		<td><b>If</b></td><td>if</td>
+	</tr>
+	<tr>
+		<td><b>While</b></td><td>while</td>
+	</tr>
+</table> >]
+
+
+}
