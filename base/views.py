@@ -21,10 +21,12 @@ def id_check(request):
 
 # Create your views here.
 
+# guide for website use
 def index(request):
     template = loader.get_template('base/index.html')
     return render(request, 'base/index.html')
 
+# guide for dsl use
 def dsl_guide(request):
     return render(request, 'base/dsl_guide.html')
 
@@ -55,18 +57,7 @@ def access(request):
                     class_user.save()
 
                 return HttpResponseRedirect('/task/' + str(next_question_id))
-                # possible_questions = Questions.objects.filter(
-                # difficulty=next_difficulty, 
-                # class_group=question_object.class_group
-                # )
-                    
-                # if possible_questions.exists():
-                #     random_question = randint(0, len(possible_questions)-1)
-                #     possible_questions_list = list(possible_questions)
-                #     next_question = possible_questions_list[random_question]
-                #     next_question_id = next_question.id
-                # else:
-                #     next_question_id = "-1"
+
             else:
                 return render(request, 'base/join.html', {'form': form})
     else:
@@ -202,7 +193,7 @@ def next_question(request, pk):
         return HttpResponseRedirect('/end_screen')
     return HttpResponseRedirect('/task/' + str(pk))
 
-
+# end of question screen
 def end_of_questions(request):
     if id_check(request) == False:
         raise Http404("You do not have permission to access this page")
@@ -256,35 +247,7 @@ def create_question(request):
         form = CreateQuestionForm()
     return render(request, 'base/createTask.html', {'form': form})
 
-# allows teachers to see data for the questions and the grades
-# def track(request):
-#     if request.method == 'POST': 
-#         form = TrackGradeForm(request.POST)
-#         if form.is_valid():
-#             question_object = Questions.objects.filter(id=form.cleaned_data['question_access_code'], passcode=form.cleaned_data['question_passcode'])
-#             if question_object.exists():
-#                 user_record = UserMarks.objects.filter(question=form.cleaned_data['question_access_code'])
-#                 context = {
-#                     'user_record' : user_record,
-#                     'student_count' : user_record.count(),
-#                     'correct_count' : user_record.filter(completed = True).count(),
-#                     'average_attempts' : user_record.aggregate(Avg('attempts'))['attempts__avg'],
-#                     'form' : form,
-#                 }
-#                 return render(request, 'base/tracking.html', context)
-#             else:
-#                 context = {
-#                     'form' : form,
-#                 }
-#                 return render(request, 'base/tracking.html', context)
-#     else:
-#         form = TrackGradeForm()
-#         context = {
-#             'form': form,
-#         }
-#     return render(request, 'base/tracking.html', context)
-
-
+# tracks answered questions in a classroom
 def track(request):
     
     if request.method == 'POST': 
@@ -322,6 +285,7 @@ def track(request):
     }
     return render(request, 'base/tracking.html', context)
 
+# lists questions to be modified from a classroom
 def modify(request):
     if request.method == 'POST': 
         form = ModifyForm(request.POST)
@@ -347,6 +311,7 @@ def modify(request):
         }
     return render(request, 'base/modify.html', context)
 
+# deletes question
 def delete(request, pk):
     question = Questions.objects.get(id=pk)
     if request.method == 'POST':
@@ -354,6 +319,7 @@ def delete(request, pk):
         return redirect('modify')
     return render(request, 'base/delete.html')
 
+# edits questio
 def edit(request, pk):
     question = Questions.objects.get(id=pk)
     form = EditQuestionForm(instance=question)
